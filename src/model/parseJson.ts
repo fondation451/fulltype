@@ -1,26 +1,50 @@
 import { convertModelTypeToType, convertModelPrimitiveTypeToType } from './convertModelTypeToType';
-import { modelType, modelPrimitiveType, modelConstantType } from './modelType';
+import { modelType, modelPrimitiveType, modelConstantType, modelObjectType } from './modelType';
 import { buildModel } from './buildModel';
 
 export { parseJson };
 
 const model = buildModel({
-  kind: 'primitive',
-  content: 'string',
+  kind: 'object',
+  content: {
+    lala: {
+      kind: 'primitive',
+      content: 'number',
+      exclude: [],
+    },
+    lili: {
+      kind: 'constant',
+      content: ['aqui', 'delante'],
+      exclude: [],
+    },
+    lolo: {
+      kind: 'array',
+      content: {
+        kind: 'primitive',
+        content: 'boolean',
+        exclude: [],
+      },
+      exclude: [],
+    },
+  },
   exclude: [],
-});
+} as const);
 
-const json = '"lala"';
+const jsonGood = `{
+  "lala": 3,
+  "lili": "delante",
+  "lolo": [true, false, true]
+}`;
 
-const tmp = parseJson(model, json);
+const tmp = parseJson(model, jsonGood);
 
 function parseJson<modelT extends modelType>(model: modelT, json: string): convertModelTypeToType<modelT> {
   const parsedJson = JSON.parse(json) as unknown;
 
-  return parseAndCheckJson(model, parsedJson);
+  return checkAndParseJson(model, parsedJson);
 }
 
-function parseAndCheckJson<modelT extends modelType>(
+function checkAndParseJson<modelT extends modelType>(
   model: modelT,
   parsedJson: unknown,
 ): convertModelTypeToType<modelT> {
@@ -39,12 +63,20 @@ function parseAndCheckJson<modelT extends modelType>(
       }
     case 'object':
       if (typeof parsedJson === 'object') {
+        type modelObjectT = modelT['content'] extends modelObjectType ? modelT['content'] : any;
+        return checkAndParseObjectJson(model.content as modelObjectT, parsedJson) as convertModelTypeToType<modelT>;
       } else {
         throw new Error();
       }
-      return 0 as convertModelTypeToType<modelT>;
     case 'array':
-      return 0 as convertModelTypeToType<modelT>;
+      if (Array.isArray(parsedJson)) {
+        type modelArrayItemT = modelT['content'] extends modelType ? modelT['content'] : any;
+        return ((parsedJson as Array<unknown>).map((arrayItem) =>
+          checkAndParseJson(model.content as modelArrayItemT, arrayItem),
+        ) as unknown) as convertModelTypeToType<modelT>;
+      } else {
+        throw new Error();
+      }
   }
 }
 
@@ -92,7 +124,15 @@ function checkAndParsePrimitiveJson<modelPrimitiveT extends modelPrimitiveType>(
   throw new Error();
 }
 
-function checkAndParseObjectJson<modelPrimitiveT extends modelPrimitiveType>(
-  modelPrimitive: modelPrimitiveT,
+function checkAndParseObjectJson<modelObjectT extends modelObjectType>(
+  modelObject: modelObjectT,
   parsedJson: unknown,
-): convertModelPrimitiveTypeToType<modelPrimitiveT> {}
+): { [key in keyof modelObjectT]: convertModelTypeToType<modelObjectT[key]> } {
+  const parsedObjectJson = {} as { [key in keyof modelObjectT]: convertModelTypeToType<modelObjectT[key]> };
+
+  for (const key in modelObject) {
+    parsedObjectJson[key] = checkAndParseJson(modelObject[key], (parsedJson as any)[key]);
+  }
+
+  return parsedObjectJson;
+}

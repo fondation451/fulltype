@@ -7,6 +7,7 @@ export type {
   modelCaseArrayType,
   modelPrimitiveType,
   modelConstantType,
+  modelObjectType,
 };
 
 type tagsType = readonly string[];
@@ -27,7 +28,7 @@ type modelCaseConstantType = {
 
 type modelCaseObjectType = {
   kind: 'object';
-  content: { [key in string]: modelType };
+  content: modelObjectType;
   exclude: tagsType;
 };
 
@@ -40,3 +41,5 @@ type modelCaseArrayType = {
 type modelPrimitiveType = 'boolean' | 'date' | 'string' | 'number' | 'void';
 
 type modelConstantType = readonly string[];
+
+type modelObjectType = { [key in string]: modelType };

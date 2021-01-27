@@ -1,42 +1,7 @@
 import { convertModelTypeToType, convertModelPrimitiveTypeToType } from './convertModelTypeToType';
 import { modelType, modelPrimitiveType, modelConstantType, modelObjectType } from './modelType';
-import { buildModel } from './buildModel';
 
 export { parseJson };
-
-const model = buildModel({
-  kind: 'object',
-  content: {
-    lala: {
-      kind: 'primitive',
-      content: 'number',
-      exclude: [],
-    },
-    lili: {
-      kind: 'constant',
-      content: ['aqui', 'delante'],
-      exclude: [],
-    },
-    lolo: {
-      kind: 'array',
-      content: {
-        kind: 'primitive',
-        content: 'boolean',
-        exclude: [],
-      },
-      exclude: [],
-    },
-  },
-  exclude: [],
-} as const);
-
-const jsonGood = `{
-  "lala": 3,
-  "lili": "delante",
-  "lolo": [true, false, true]
-}`;
-
-const tmp = parseJson(model, jsonGood);
 
 function parseJson<modelT extends modelType>(model: modelT, json: string): convertModelTypeToType<modelT> {
   const parsedJson = JSON.parse(json) as unknown;

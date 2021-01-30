@@ -24,14 +24,14 @@ function checkAndParseJson<modelT extends modelType>(
       if (typeof parsedJson === 'string' && modelConstant.includes(parsedJson)) {
         return parsedJson as convertModelTypeToType<modelT>;
       } else {
-        throwConstantTypeError(modelConstant, parsedJson);
+        throw buildConstantTypeError(modelConstant, parsedJson);
       }
     case 'object':
       if (typeof parsedJson === 'object') {
         type modelObjectT = modelT['content'] extends modelObjectType ? modelT['content'] : any;
         return checkAndParseObjectJson(model.content as modelObjectT, parsedJson) as convertModelTypeToType<modelT>;
       } else {
-        throw new Error();
+        throw buildObjectTypeError(parsedJson);
       }
     case 'array':
       if (Array.isArray(parsedJson)) {
@@ -40,7 +40,7 @@ function checkAndParseJson<modelT extends modelType>(
           checkAndParseJson(model.content as modelArrayItemT, arrayItem),
         ) as unknown) as convertModelTypeToType<modelT>;
       } else {
-        throw new Error();
+        throw buildArrayTypeError(parsedJson);
       }
   }
 }
@@ -54,7 +54,7 @@ function checkAndParsePrimitiveJson<modelPrimitiveT extends modelPrimitiveType>(
       if (typeof parsedJson === 'boolean') {
         return parsedJson as convertModelPrimitiveTypeToType<modelPrimitiveT>;
       } else {
-        throwPrimitiveTypeError(modelPrimitive, parsedJson);
+        throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'date':
       if (typeof parsedJson === 'string') {
@@ -62,32 +62,32 @@ function checkAndParsePrimitiveJson<modelPrimitiveT extends modelPrimitiveType>(
         if (!isNaN(parsedDate.getDate())) {
           return parsedDate as convertModelPrimitiveTypeToType<modelPrimitiveT>;
         } else {
-          throwPrimitiveTypeError(modelPrimitive, parsedJson);
+          throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
         }
       } else {
-        throwPrimitiveTypeError(modelPrimitive, parsedJson);
+        throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'number':
       if (typeof parsedJson === 'number') {
         return parsedJson as convertModelPrimitiveTypeToType<modelPrimitiveT>;
       } else {
-        throwPrimitiveTypeError(modelPrimitive, parsedJson);
+        throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'string':
       if (typeof parsedJson === 'string') {
         return parsedJson as convertModelPrimitiveTypeToType<modelPrimitiveT>;
       } else {
-        throwPrimitiveTypeError(modelPrimitive, parsedJson);
+        throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'void':
       if (parsedJson === undefined) {
         return parsedJson as convertModelPrimitiveTypeToType<modelPrimitiveT>;
       } else {
-        throwPrimitiveTypeError(modelPrimitive, parsedJson);
+        throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
   }
 
-  throwTypeEngineError();
+  throw buildTypeEngineError();
 }
 
 function checkAndParseObjectJson<modelObjectT extends modelObjectType>(
@@ -103,14 +103,22 @@ function checkAndParseObjectJson<modelObjectT extends modelObjectType>(
   return parsedObjectJson;
 }
 
-function throwPrimitiveTypeError(modelPrimitive: modelPrimitiveType, parsedJson: unknown) {
-  throw new Error(`Expected ${modelPrimitive}, but got ${parsedJson}`);
+function buildPrimitiveTypeError(modelPrimitive: modelPrimitiveType, parsedJson: unknown) {
+  return new Error(`Expected ${modelPrimitive}, but got ${parsedJson}`);
 }
 
-function throwConstantTypeError(modelConstant: modelConstantType, parsedJson: unknown) {
-  throw new Error(`Expected one of these constants [${modelConstant}], but got ${parsedJson}`);
+function buildConstantTypeError(modelConstant: modelConstantType, parsedJson: unknown) {
+  return new Error(`Expected one of these constants [${modelConstant}], but got ${parsedJson}`);
 }
 
-function throwTypeEngineError(): never {
+function buildObjectTypeError(parsedJson: unknown) {
+  throw new Error(`Expected an object, but got ${parsedJson}`);
+}
+
+function buildArrayTypeError(parsedJson: unknown) {
+  throw new Error(`Expected an array, but got ${parsedJson}`);
+}
+
+function buildTypeEngineError(): never {
   throw new Error(`TYPE ENGINE ERROR`);
 }

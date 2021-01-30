@@ -278,5 +278,37 @@ describe('parseJson', () => {
         );
       });
     });
+
+    describe('object case', () => {
+      it('should throw an Error with invalid JSON (not an object case)', () => {
+        const model = buildModel({
+          kind: 'object',
+          content: {
+            field: { kind: 'primitive', content: 'string', exclude: [] },
+          },
+          exclude: [],
+        } as const);
+        const json = `\"STRING\"`;
+
+        expect(() => parseJson(model, json)).toThrow('Expected an object, but got STRING');
+      });
+    });
+
+    describe('array case', () => {
+      it('should throw an Error with invalid JSON (not an array case)', () => {
+        const model = buildModel({
+          kind: 'array',
+          content: {
+            kind: 'primitive',
+            content: 'string',
+            exclude: [],
+          },
+          exclude: [],
+        } as const);
+        const json = `\"STRING\"`;
+
+        expect(() => parseJson(model, json)).toThrow('Expected an array, but got STRING');
+      });
+    });
   });
 });

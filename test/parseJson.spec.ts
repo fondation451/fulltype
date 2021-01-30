@@ -192,4 +192,63 @@ describe('parseJson', () => {
       expect(parsedJson).toEqual(JSON.parse(json));
     });
   });
+
+  describe('bad case', () => {
+    describe('primitive case', () => {
+      it('should throw an Error with invalid JSON (case number)', () => {
+        const model = buildModel({
+          kind: 'primitive',
+          content: 'number',
+          exclude: [],
+        } as const);
+        const json = `"STRING"`;
+
+        expect(() => parseJson(model, json)).toThrow('Expected number, but got STRING');
+      });
+
+      it('should throw an Error with invalid JSON (case boolean)', () => {
+        const model = buildModel({
+          kind: 'primitive',
+          content: 'boolean',
+          exclude: [],
+        } as const);
+        const json = `3`;
+
+        expect(() => parseJson(model, json)).toThrow('Expected boolean, but got 3');
+      });
+
+      it('should throw an Error with invalid JSON (case string)', () => {
+        const model = buildModel({
+          kind: 'primitive',
+          content: 'string',
+          exclude: [],
+        } as const);
+        const json = `true`;
+
+        expect(() => parseJson(model, json)).toThrow('Expected string, but got true');
+      });
+
+      it('should throw an Error with invalid JSON (case date)', () => {
+        const model = buildModel({
+          kind: 'primitive',
+          content: 'date',
+          exclude: [],
+        } as const);
+        const json = `3`;
+
+        expect(() => parseJson(model, json)).toThrow('Expected date, but got 3');
+      });
+
+      it('should throw an Error with invalid JSON (case invalid date)', () => {
+        const model = buildModel({
+          kind: 'primitive',
+          content: 'date',
+          exclude: [],
+        } as const);
+        const json = `"INVALID DATE"`;
+
+        expect(() => parseJson(model, json)).toThrow('Expected date, but got INVALID DATE');
+      });
+    });
+  });
 });

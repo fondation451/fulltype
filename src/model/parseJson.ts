@@ -54,39 +54,40 @@ function checkAndParsePrimitiveJson<modelPrimitiveT extends modelPrimitiveType>(
       if (typeof parsedJson === 'boolean') {
         return parsedJson as convertModelPrimitiveTypeToType<modelPrimitiveT>;
       } else {
-        throw new Error();
+        throwPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'date':
       if (typeof parsedJson === 'string') {
-        try {
-          return new Date(parsedJson) as convertModelPrimitiveTypeToType<modelPrimitiveT>;
-        } catch (_) {
-          throw new Error();
+        const parsedDate = new Date(parsedJson);
+        if (!isNaN(parsedDate.getDate())) {
+          return parsedDate as convertModelPrimitiveTypeToType<modelPrimitiveT>;
+        } else {
+          throwPrimitiveTypeError(modelPrimitive, parsedJson);
         }
       } else {
-        throw new Error();
+        throwPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'number':
       if (typeof parsedJson === 'number') {
         return parsedJson as convertModelPrimitiveTypeToType<modelPrimitiveT>;
       } else {
-        throw new Error();
+        throwPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'string':
       if (typeof parsedJson === 'string') {
         return parsedJson as convertModelPrimitiveTypeToType<modelPrimitiveT>;
       } else {
-        throw new Error();
+        throwPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'void':
       if (parsedJson === undefined) {
         return parsedJson as convertModelPrimitiveTypeToType<modelPrimitiveT>;
       } else {
-        throw new Error();
+        throwPrimitiveTypeError(modelPrimitive, parsedJson);
       }
   }
 
-  throw new Error();
+  throwTypeEngineError();
 }
 
 function checkAndParseObjectJson<modelObjectT extends modelObjectType>(
@@ -100,4 +101,12 @@ function checkAndParseObjectJson<modelObjectT extends modelObjectType>(
   }
 
   return parsedObjectJson;
+}
+
+function throwPrimitiveTypeError(modelPrimitive: modelPrimitiveType, parsedJson: unknown) {
+  throw new Error(`Expected ${modelPrimitive}, but got ${parsedJson}`);
+}
+
+function throwTypeEngineError(): never {
+  throw new Error(`TYPE ENGINE ERROR`);
 }

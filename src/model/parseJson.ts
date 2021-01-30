@@ -24,7 +24,7 @@ function checkAndParseJson<modelT extends modelType>(
       if (typeof parsedJson === 'string' && modelConstant.includes(parsedJson)) {
         return parsedJson as convertModelTypeToType<modelT>;
       } else {
-        throw new Error();
+        throwConstantTypeError(modelConstant, parsedJson);
       }
     case 'object':
       if (typeof parsedJson === 'object') {
@@ -105,6 +105,10 @@ function checkAndParseObjectJson<modelObjectT extends modelObjectType>(
 
 function throwPrimitiveTypeError(modelPrimitive: modelPrimitiveType, parsedJson: unknown) {
   throw new Error(`Expected ${modelPrimitive}, but got ${parsedJson}`);
+}
+
+function throwConstantTypeError(modelConstant: modelConstantType, parsedJson: unknown) {
+  throw new Error(`Expected one of these constants [${modelConstant}], but got ${parsedJson}`);
 }
 
 function throwTypeEngineError(): never {

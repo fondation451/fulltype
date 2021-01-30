@@ -250,5 +250,33 @@ describe('parseJson', () => {
         expect(() => parseJson(model, json)).toThrow('Expected date, but got INVALID DATE');
       });
     });
+
+    describe('constant case', () => {
+      it('should throw an Error with invalid JSON (not the good type case)', () => {
+        const model = buildModel({
+          kind: 'constant',
+          content: ['CONSTANT_1', 'CONSTANT_2'],
+          exclude: [],
+        } as const);
+        const json = `3`;
+
+        expect(() => parseJson(model, json)).toThrow(
+          'Expected one of these constants [CONSTANT_1,CONSTANT_2], but got 3',
+        );
+      });
+
+      it('should throw an Error with invalid JSON (not the good constant case)', () => {
+        const model = buildModel({
+          kind: 'constant',
+          content: ['CONSTANT_1', 'CONSTANT_2'],
+          exclude: [],
+        } as const);
+        const json = `\"ANOTHER_CONSTANT\"`;
+
+        expect(() => parseJson(model, json)).toThrow(
+          'Expected one of these constants [CONSTANT_1,CONSTANT_2], but got ANOTHER_CONSTANT',
+        );
+      });
+    });
   });
 });

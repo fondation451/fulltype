@@ -310,5 +310,91 @@ describe('parseJson', () => {
         expect(() => parseJson(model, json)).toThrow('Expected an array, but got STRING');
       });
     });
+
+    describe('general case', () => {
+      const model = buildModel({
+        kind: 'object',
+        content: {
+          field1: { kind: 'primitive', content: 'string', exclude: [] },
+          field2: {
+            kind: 'array',
+            content: {
+              kind: 'object',
+              content: {
+                arraySubField1: {
+                  kind: 'primitive',
+                  content: 'number',
+                  exclude: [],
+                },
+                arraySubField2: {
+                  kind: 'constant',
+                  content: ['CONSTANT1', 'CONSTANT2'],
+                  exclude: [],
+                },
+              },
+              exclude: [],
+            },
+            exclude: [],
+          },
+        },
+        exclude: [],
+      } as const);
+
+      it('should throw an Error with invalid JSON (case 1)', () => {
+        const json = `{
+          "field1": false,
+          "field2": [
+            {
+              "arraySubField1": 1,
+              "arraySubField2": "CONSTANT1"
+            },
+            {
+              "arraySubField1": 0,
+              "arraySubField2": "CONSTANT2"
+            }
+          ]
+        }`;
+
+        expect(() => parseJson(model, json)).toThrow('Expected string, but got false');
+      });
+
+      it('should throw an Error with invalid JSON (case 2)', () => {
+        const json = `{
+          "field1": "string",
+          "field2": [
+            {
+              "arraySubField1": false,
+              "arraySubField2": "CONSTANT1"
+            },
+            {
+              "arraySubField1": 0,
+              "arraySubField2": "CONSTANT2"
+            }
+          ]
+        }`;
+
+        expect(() => parseJson(model, json)).toThrow('Expected number, but got false');
+      });
+
+      it('should throw an Error with invalid JSON (case 3)', () => {
+        const json = `{
+          "field1": "string",
+          "field2": [
+            {
+              "arraySubField1": 1,
+              "arraySubField2": "CONSTANT1"
+            },
+            {
+              "arraySubField1": 0,
+              "arraySubField2": false
+            }
+          ]
+        }`;
+
+        expect(() => parseJson(model, json)).toThrow(
+          'Expected one of these constants [CONSTANT1,CONSTANT2], but got false',
+        );
+      });
+    });
   });
 });

@@ -8,7 +8,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'primitive',
           content: 'number',
-          exclude: [],
         } as const);
         const json = `3`;
 
@@ -22,7 +21,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'primitive',
           content: 'boolean',
-          exclude: [],
         } as const);
         const json = `true`;
 
@@ -36,7 +34,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'primitive',
           content: 'string',
-          exclude: [],
         } as const);
         const json = `"STRING"`;
 
@@ -50,7 +47,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'primitive',
           content: 'date',
-          exclude: [],
         } as const);
         const json = `"2021-01-26T18:52:28.926Z"`;
 
@@ -65,7 +61,6 @@ describe('parseJson', () => {
       const model = buildModel({
         kind: 'constant',
         content: ['CONSTANT_1', 'CONSTANT_2'],
-        exclude: [],
       } as const);
       const json = `"CONSTANT_2"`;
 
@@ -81,9 +76,7 @@ describe('parseJson', () => {
         content: {
           kind: 'primitive',
           content: 'boolean',
-          exclude: [],
         },
-        exclude: [],
       } as const);
       const json = `[true, false, true]`;
 
@@ -97,11 +90,10 @@ describe('parseJson', () => {
       const model = buildModel({
         kind: 'object',
         content: {
-          field1: { kind: 'primitive', content: 'boolean', exclude: [] },
-          field2: { kind: 'primitive', content: 'number', exclude: [] },
-          field3: { kind: 'primitive', content: 'string', exclude: [] },
+          field1: { kind: 'primitive', content: 'boolean' },
+          field2: { kind: 'primitive', content: 'number' },
+          field3: { kind: 'primitive', content: 'string' },
         },
-        exclude: [],
       } as const);
       const json = `{
           "field1": false,
@@ -119,7 +111,7 @@ describe('parseJson', () => {
       const model = buildModel({
         kind: 'object',
         content: {
-          field1: { kind: 'primitive', content: 'boolean', exclude: [] },
+          field1: { kind: 'primitive', content: 'boolean' },
           field2: {
             kind: 'array',
             content: {
@@ -128,38 +120,29 @@ describe('parseJson', () => {
                 arraySubField1: {
                   kind: 'primitive',
                   content: 'string',
-                  exclude: [],
                 },
                 arraySubField2: {
                   kind: 'array',
                   content: {
                     kind: 'primitive',
                     content: 'boolean',
-                    exclude: [],
                   },
-                  exclude: [],
                 },
                 arraySubField3: {
                   kind: 'constant',
                   content: ['CONSTANT1', 'CONSTANT2'],
-                  exclude: [],
                 },
               },
-              exclude: [],
             },
-            exclude: [],
           },
           field3: {
             kind: 'array',
             content: {
               kind: 'constant',
               content: ['ANOTHER_CONSTANT1', 'ANOTHER_CONSTANT2'],
-              exclude: [],
             },
-            exclude: [],
           },
         },
-        exclude: [],
       } as const);
       const json = `{
         "field1": false,
@@ -199,7 +182,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'primitive',
           content: 'number',
-          exclude: [],
         } as const);
         const json = `"STRING"`;
 
@@ -210,7 +192,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'primitive',
           content: 'boolean',
-          exclude: [],
         } as const);
         const json = `3`;
 
@@ -221,7 +202,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'primitive',
           content: 'string',
-          exclude: [],
         } as const);
         const json = `true`;
 
@@ -232,7 +212,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'primitive',
           content: 'date',
-          exclude: [],
         } as const);
         const json = `3`;
 
@@ -243,7 +222,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'primitive',
           content: 'date',
-          exclude: [],
         } as const);
         const json = `"INVALID DATE"`;
 
@@ -256,7 +234,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'constant',
           content: ['CONSTANT_1', 'CONSTANT_2'],
-          exclude: [],
         } as const);
         const json = `3`;
 
@@ -269,7 +246,6 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'constant',
           content: ['CONSTANT_1', 'CONSTANT_2'],
-          exclude: [],
         } as const);
         const json = `\"ANOTHER_CONSTANT\"`;
 
@@ -284,9 +260,8 @@ describe('parseJson', () => {
         const model = buildModel({
           kind: 'object',
           content: {
-            field: { kind: 'primitive', content: 'string', exclude: [] },
+            field: { kind: 'primitive', content: 'string' },
           },
-          exclude: [],
         } as const);
         const json = `\"STRING\"`;
 
@@ -298,12 +273,7 @@ describe('parseJson', () => {
       it('should throw an Error with invalid JSON (not an array case)', () => {
         const model = buildModel({
           kind: 'array',
-          content: {
-            kind: 'primitive',
-            content: 'string',
-            exclude: [],
-          },
-          exclude: [],
+          content: { kind: 'primitive', content: 'string' },
         } as const);
         const json = `\"STRING\"`;
 
@@ -315,29 +285,18 @@ describe('parseJson', () => {
       const model = buildModel({
         kind: 'object',
         content: {
-          field1: { kind: 'primitive', content: 'string', exclude: [] },
+          field1: { kind: 'primitive', content: 'string' },
           field2: {
             kind: 'array',
             content: {
               kind: 'object',
               content: {
-                arraySubField1: {
-                  kind: 'primitive',
-                  content: 'number',
-                  exclude: [],
-                },
-                arraySubField2: {
-                  kind: 'constant',
-                  content: ['CONSTANT1', 'CONSTANT2'],
-                  exclude: [],
-                },
+                arraySubField1: { kind: 'primitive', content: 'number' },
+                arraySubField2: { kind: 'constant', content: ['CONSTANT1', 'CONSTANT2'] },
               },
-              exclude: [],
             },
-            exclude: [],
           },
         },
-        exclude: [],
       } as const);
 
       it('should throw an Error with invalid JSON (case 1)', () => {

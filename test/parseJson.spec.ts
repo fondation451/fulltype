@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { buildModel } from '../src/model/buildModel';
 import { parseJson } from '../src/model/parseJson';
 
@@ -68,6 +69,34 @@ describe('parseJson', () => {
 
       const _typeCheck: 'CONSTANT_1' | 'CONSTANT_2' = parsedJson;
       expect(parsedJson).toEqual(JSON.parse(json));
+    });
+
+    describe('custom case', () => {
+      it('should parse a valid JSON (custom string)', () => {
+        const model = buildModel({
+          kind: 'custom',
+          content: 'CUSTOM_TYPE',
+        } as const);
+        const json = `"CUSTOM_TYPE_VALUE"`;
+
+        const parsedJson = parseJson({ model, json, typeMapping: { CUSTOM_TYPE: (value) => `constructor(${value})` } });
+
+        const _typeCheck: string = parsedJson;
+        expect(parsedJson).toEqual('constructor(CUSTOM_TYPE_VALUE)');
+      });
+
+      it('should parse a valid JSON (custom object id)', () => {
+        const model = buildModel({
+          kind: 'custom',
+          content: 'Mongo_ID',
+        } as const);
+        const json = `${JSON.stringify(new ObjectId())}`;
+
+        const parsedJson = parseJson({ model, json, typeMapping: { Mongo_ID: (idStr) => new ObjectId(idStr) } });
+
+        const _typeCheck: ObjectId = parsedJson;
+        expect(JSON.stringify(parsedJson)).toEqual(json);
+      });
     });
 
     it('should parse a valid JSON (array case)', () => {

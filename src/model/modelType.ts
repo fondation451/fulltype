@@ -2,6 +2,7 @@ export type {
   modelType,
   modelCasePrimitiveType,
   modelCaseConstantType,
+  modelCaseCustomType,
   modelCaseObjectType,
   modelCaseArrayType,
   modelPrimitiveType,
@@ -9,7 +10,12 @@ export type {
   modelObjectType,
 };
 
-type modelType = modelCasePrimitiveType | modelCaseConstantType | modelCaseObjectType | modelCaseArrayType;
+type modelType =
+  | modelCasePrimitiveType
+  | modelCaseConstantType
+  | modelCaseCustomType
+  | modelCaseObjectType
+  | modelCaseArrayType;
 
 type modelCasePrimitiveType = {
   kind: 'primitive';
@@ -19,6 +25,11 @@ type modelCasePrimitiveType = {
 type modelCaseConstantType = {
   kind: 'constant';
   content: modelConstantType;
+};
+
+type modelCaseCustomType = {
+  kind: 'custom';
+  content: string;
 };
 
 type modelCaseObjectType = {

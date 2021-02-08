@@ -11,7 +11,7 @@ describe('parseJson', () => {
         } as const);
         const json = `3`;
 
-        const parsedJson = parseJson(model, json);
+        const parsedJson = parseJson({ model, json });
 
         const _typeCheck: number = parsedJson;
         expect(parsedJson).toEqual(JSON.parse(json));
@@ -24,7 +24,7 @@ describe('parseJson', () => {
         } as const);
         const json = `true`;
 
-        const parsedJson = parseJson(model, json);
+        const parsedJson = parseJson({ model, json });
 
         const _typeCheck: boolean = parsedJson;
         expect(parsedJson).toEqual(JSON.parse(json));
@@ -37,7 +37,7 @@ describe('parseJson', () => {
         } as const);
         const json = `"STRING"`;
 
-        const parsedJson = parseJson(model, json);
+        const parsedJson = parseJson({ model, json });
 
         const _typeCheck: string = parsedJson;
         expect(parsedJson).toEqual(JSON.parse(json));
@@ -50,7 +50,7 @@ describe('parseJson', () => {
         } as const);
         const json = `"2021-01-26T18:52:28.926Z"`;
 
-        const parsedJson = parseJson(model, json);
+        const parsedJson = parseJson({ model, json });
 
         const _typeCheck: Date = parsedJson;
         expect(parsedJson.toISOString()).toEqual(JSON.parse(json));
@@ -64,7 +64,7 @@ describe('parseJson', () => {
       } as const);
       const json = `"CONSTANT_2"`;
 
-      const parsedJson = parseJson(model, json);
+      const parsedJson = parseJson({ model, json });
 
       const _typeCheck: 'CONSTANT_1' | 'CONSTANT_2' = parsedJson;
       expect(parsedJson).toEqual(JSON.parse(json));
@@ -80,7 +80,7 @@ describe('parseJson', () => {
       } as const);
       const json = `[true, false, true]`;
 
-      const parsedJson = parseJson(model, json);
+      const parsedJson = parseJson({ model, json });
 
       const _typeCheck: boolean[] = parsedJson;
       expect(parsedJson).toEqual(JSON.parse(json));
@@ -101,7 +101,7 @@ describe('parseJson', () => {
           "field3": "STRING"
         }`;
 
-      const parsedJson = parseJson(model, json);
+      const parsedJson = parseJson({ model, json });
 
       const _typeCheck: { field1: boolean; field2: number; field3: string } = parsedJson;
       expect(parsedJson).toEqual(JSON.parse(json));
@@ -161,7 +161,7 @@ describe('parseJson', () => {
         "field3": ["ANOTHER_CONSTANT1", "ANOTHER_CONSTANT1", "ANOTHER_CONSTANT2"]
       }`;
 
-      const parsedJson = parseJson(model, json);
+      const parsedJson = parseJson({ model, json });
 
       const _typeCheck: {
         field1: boolean;
@@ -185,7 +185,7 @@ describe('parseJson', () => {
         } as const);
         const json = `"STRING"`;
 
-        expect(() => parseJson(model, json)).toThrow('Expected number, but got STRING');
+        expect(() => parseJson({ model, json })).toThrow('Expected number, but got STRING');
       });
 
       it('should throw an Error with invalid JSON (case boolean)', () => {
@@ -195,7 +195,7 @@ describe('parseJson', () => {
         } as const);
         const json = `3`;
 
-        expect(() => parseJson(model, json)).toThrow('Expected boolean, but got 3');
+        expect(() => parseJson({ model, json })).toThrow('Expected boolean, but got 3');
       });
 
       it('should throw an Error with invalid JSON (case string)', () => {
@@ -205,7 +205,7 @@ describe('parseJson', () => {
         } as const);
         const json = `true`;
 
-        expect(() => parseJson(model, json)).toThrow('Expected string, but got true');
+        expect(() => parseJson({ model, json })).toThrow('Expected string, but got true');
       });
 
       it('should throw an Error with invalid JSON (case date)', () => {
@@ -215,7 +215,7 @@ describe('parseJson', () => {
         } as const);
         const json = `3`;
 
-        expect(() => parseJson(model, json)).toThrow('Expected date, but got 3');
+        expect(() => parseJson({ model, json })).toThrow('Expected date, but got 3');
       });
 
       it('should throw an Error with invalid JSON (case invalid date)', () => {
@@ -225,7 +225,7 @@ describe('parseJson', () => {
         } as const);
         const json = `"INVALID DATE"`;
 
-        expect(() => parseJson(model, json)).toThrow('Expected date, but got INVALID DATE');
+        expect(() => parseJson({ model, json })).toThrow('Expected date, but got INVALID DATE');
       });
     });
 
@@ -237,7 +237,7 @@ describe('parseJson', () => {
         } as const);
         const json = `3`;
 
-        expect(() => parseJson(model, json)).toThrow(
+        expect(() => parseJson({ model, json })).toThrow(
           'Expected one of these constants [CONSTANT_1,CONSTANT_2], but got 3',
         );
       });
@@ -249,7 +249,7 @@ describe('parseJson', () => {
         } as const);
         const json = `\"ANOTHER_CONSTANT\"`;
 
-        expect(() => parseJson(model, json)).toThrow(
+        expect(() => parseJson({ model, json })).toThrow(
           'Expected one of these constants [CONSTANT_1,CONSTANT_2], but got ANOTHER_CONSTANT',
         );
       });
@@ -265,7 +265,7 @@ describe('parseJson', () => {
         } as const);
         const json = `\"STRING\"`;
 
-        expect(() => parseJson(model, json)).toThrow('Expected an object, but got STRING');
+        expect(() => parseJson({ model, json })).toThrow('Expected an object, but got STRING');
       });
     });
 
@@ -277,7 +277,7 @@ describe('parseJson', () => {
         } as const);
         const json = `\"STRING\"`;
 
-        expect(() => parseJson(model, json)).toThrow('Expected an array, but got STRING');
+        expect(() => parseJson({ model, json })).toThrow('Expected an array, but got STRING');
       });
     });
 
@@ -314,7 +314,7 @@ describe('parseJson', () => {
           ]
         }`;
 
-        expect(() => parseJson(model, json)).toThrow('Expected string, but got false');
+        expect(() => parseJson({ model, json })).toThrow('Expected string, but got false');
       });
 
       it('should throw an Error with invalid JSON (case 2)', () => {
@@ -332,7 +332,7 @@ describe('parseJson', () => {
           ]
         }`;
 
-        expect(() => parseJson(model, json)).toThrow('Expected number, but got false');
+        expect(() => parseJson({ model, json })).toThrow('Expected number, but got false');
       });
 
       it('should throw an Error with invalid JSON (case 3)', () => {
@@ -350,7 +350,7 @@ describe('parseJson', () => {
           ]
         }`;
 
-        expect(() => parseJson(model, json)).toThrow(
+        expect(() => parseJson({ model, json })).toThrow(
           'Expected one of these constants [CONSTANT1,CONSTANT2], but got false',
         );
       });

@@ -22,10 +22,9 @@ yarn install type-architect
 
 Here is an example with an user data model with a mongoDb ID:
 
-```js
-import { ObjectId } from 'mongoDb'
-import { buildModel, buildType } from 'type-architect'
-
+```ts
+import { ObjectId } from 'mongoDb';
+import { buildModel, buildType } from 'type-architect';
 
 const userModel = buildModel({
   kind: 'object',
@@ -34,9 +33,9 @@ const userModel = buildModel({
     email: { kind: 'primitive', content: 'string' },
     name: { kind: 'primitive', content: 'string' },
     passwordHash: { kind: 'primitive', content: 'string' },
-  }
-} as const)
+  },
+} as const);
 // "as const" is mandatory, Type Architecte can only work with const type
 
-type userType = buildType<typeof userModel, { ObjectId: ObjectId }>
+type userType = buildType<typeof userModel, { ObjectId: ObjectId }>;
 ```

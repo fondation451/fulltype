@@ -186,3 +186,23 @@ const parsedObjectWithCustom = parseJson({
   customMapping: { someError: (errorMessage) => new Error(errorMessage) },
 });
 ```
+
+### `buildModel`
+
+The `buildModel` function allows to build model with the proper structure.
+Its parameter should always be define as a **const type**
+
+### `buildType`
+
+`buildType` is a generic type which can derive a type from a model.
+It can take two parameters:
+
+- the type of the model to type: `typeof yourModel` (mandatory)
+- a `customMappingType` for the custom kind present in the model. It should be the type
+  of an object the name of the custom kind of the model as key and their actual type as value
+
+### `parseJson`
+
+The `parseJson` function allows you to parse a JSON according to a model.
+The parsed value is statically type to the type derived from the model.
+During the parsing, there will also be some dynamic check performed.

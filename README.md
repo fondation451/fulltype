@@ -51,7 +51,7 @@ const userJson = `{
   "_id": "507f1f77bcf86cd799439011",
   "email": "email@email.email",
   "name": "NAME",
-  "passwordHash": "qiyh4XPJGsOZ2MEAyLkfWqeQ",
+  "passwordHash": "qiyh4XPJGsOZ2MEAyLkfWqeQ"
 }`;
 
 // parsedUser is already typed with the type buildType<typeof userModel, { ObjectId: ObjectId }>

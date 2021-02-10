@@ -1,7 +1,7 @@
 import {
   buildModel,
-  convertModelTypeToType,
-  customTypeMappingType,
+  buildType,
+  customMappingType,
   modelType,
   modelCasePrimitiveType,
   modelCaseConstantType,
@@ -17,8 +17,8 @@ import {
 export { buildModel, parseJson };
 
 export type {
-  convertModelTypeToType,
-  customTypeMappingType,
+  buildType,
+  customMappingType,
   modelType,
   modelCasePrimitiveType,
   modelCaseConstantType,

@@ -1,4 +1,4 @@
 export * from './buildModel';
-export * from './convertModelTypeToType';
+export * from './buildType';
 export * from './modelType';
 export * from './parseJson';

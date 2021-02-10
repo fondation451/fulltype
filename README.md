@@ -55,7 +55,11 @@ const userJson = `{
 }`;
 
 // parsedUser is already typed with the type buildType<typeof userModel, { ObjectId: ObjectId }>
-const parsedUser = parseJson({ userModel, json, customMapping: { ObjectId: (idStr) => new ObjectId(idStr) } });
+const parsedUser = parseJson({
+  model: userModel,
+  json: userJson,
+  customMapping: { ObjectId: (idStr) => new ObjectId(idStr) },
+});
 ```
 
 ## Documentation
@@ -73,11 +77,11 @@ The model type use an ADT style approach, each model looks like this:
 }
 ```
 
-There are 5 differents model kind in Type Architect: `'primitive'`, `'constant'`, `'custom'`, `'object'`, `'array'`.
+There are 5 differents model kind in Type Architect: `'primitive'`, `'constant'`, `'array'`, `'object'`, `'custom'`.
 
 #### `'primitive'` kind
 
-The primitive kind of model allows you to represent primitive type.
+The primitive kind allows you to represent primitive type.
 
 For now, the supported primitives types are:
 
@@ -90,8 +94,95 @@ For now, the supported primitives types are:
 For example, for a model representing a string, we will have:
 
 ```ts
-{
+const primitiveModel = buildModel({
   kind: 'primitive',
-  content: 'string'
-}
+  content: 'string',
+} as const);
+```
+
+#### `'constant'` kind
+
+The constant kind allows you to represent constant. A constant will be represented by a set of possible string values.
+
+For example, to represent the following constant : `'FREE' | 'PENDING' | 'DONE'`, we will have:
+
+```ts
+const constantModel = buildModel({
+  kind: 'constant',
+  content: ['FREE', 'PENDING', 'DONE'],
+} as const);
+```
+
+#### `'array'` kind
+
+The array kind allows you to represent an array of some type. It is done by combining a model with an array model.
+
+For example, if we want to represent an array of string, we will have:
+
+```ts
+const arrayModel = buildModel({
+  kind: 'array',
+  content: {
+    kind: 'primitive',
+    content: 'string',
+  },
+} as const);
+```
+
+#### `'object'` kind
+
+The object kind allows you to represent object. It is done by combining model in different fields with an objec model.
+
+For example, if we want to define an object position with two fields, we will have:
+
+```ts
+const objectModel = buildModel({
+  kind: 'object',
+  content: {
+    positionX: {
+      kind: 'primitive',
+      content: 'number',
+    },
+    positionY: {
+      kind: 'primitive',
+      content: 'number',
+    },
+  },
+} as const);
+```
+
+#### `'custom'` kind
+
+The custom kind allows you to express type that can not be represented with the other structure of model.
+It can be usefull to express a model deriving from an existing class.
+
+The content of a custom kind model is the name you want to give to this custom type.
+
+For example, if we want to define the model of an error, we will have:
+
+```ts
+const objectModel = buildModel({
+  kind: 'custom',
+  content: 'someError',
+} as const);
+```
+
+If you want to compute the type of a model where there are custom kind model, you need to give
+a mapping of the custom kind model present from its name to an actual type:
+
+```ts
+type objectModelWithCustomType = buildType<typeof objectModel, { someError: Error }>;
+```
+
+In the same way, for JSON parsing, when there are custom kind model in your model, you need to
+provide a `customMapping` to check and map the parsed string to the proper type:
+
+```ts
+const jsonWithCustom = 'SOME ERROR TEXT';
+
+const parsedObjectWithCustom = parseJson({
+  model: objectModel,
+  json: jsonWithCustom,
+  customMapping: { someError: (errorMessage) => new Error(errorMessage) },
+});
 ```

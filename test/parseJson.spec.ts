@@ -79,7 +79,11 @@ describe('parseJson', () => {
         } as const);
         const json = `"CUSTOM_TYPE_VALUE"`;
 
-        const parsedJson = parseJson({ model, json, typeMapping: { CUSTOM_TYPE: (value) => `constructor(${value})` } });
+        const parsedJson = parseJson({
+          model,
+          json,
+          customMapping: { CUSTOM_TYPE: (value) => `constructor(${value})` },
+        });
 
         const _typeCheck: string = parsedJson;
         expect(parsedJson).toEqual('constructor(CUSTOM_TYPE_VALUE)');
@@ -92,7 +96,7 @@ describe('parseJson', () => {
         } as const);
         const json = `${JSON.stringify(new ObjectId())}`;
 
-        const parsedJson = parseJson({ model, json, typeMapping: { Mongo_ID: (idStr) => new ObjectId(idStr) } });
+        const parsedJson = parseJson({ model, json, customMapping: { Mongo_ID: (idStr) => new ObjectId(idStr) } });
 
         const _typeCheck: ObjectId = parsedJson;
         expect(JSON.stringify(parsedJson)).toEqual(json);

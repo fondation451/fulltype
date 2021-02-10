@@ -3,7 +3,7 @@
   "bugs": {
     "url": "https://github.com/fondation451/type-architect/issues"
   },
-  "description": "Introduce data model and auto generated type",
+  "description": "Introduce data model and auto generated type in Typescript",
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@types/mongodb": "^3.6.6",

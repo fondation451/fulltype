@@ -22,7 +22,14 @@
     "lib/src/**/*"
   ],
   "homepage": "https://github.com/fondation451/type-architect#readme",
-  "keywords": [],
+  "keywords": [
+    "typescript",
+    "data",
+    "schema",
+    "model",
+    "json",
+    "dry"
+  ],
   "license": "ISC",
   "main": "lib/src/index.js",
   "name": "type-architect",

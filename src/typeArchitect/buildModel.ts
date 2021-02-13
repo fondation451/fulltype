@@ -1,4 +1,4 @@
-import { modelType } from './modelType';
+import { modelType } from '../types';
 
 export { buildModel };
 

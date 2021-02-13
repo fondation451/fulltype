@@ -1,5 +1,12 @@
-import { buildType, buildPrimitiveType, customMappingType } from './buildType';
-import { modelType, modelPrimitiveType, modelConstantType, modelObjectType } from './modelType';
+import {
+  buildType,
+  buildPrimitiveType,
+  customMappingType,
+  modelType,
+  modelPrimitiveType,
+  modelConstantType,
+  modelObjectType,
+} from '../types';
 
 export { generate };
 

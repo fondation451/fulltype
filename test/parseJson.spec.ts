@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import { buildModel } from '../src/model/buildModel';
-import { parseJson } from '../src/model/parseJson';
+import { buildModel } from '../src/typeArchitect/buildModel';
+import { parseJson } from '../src/typeArchitect/parseJson';
 
 describe('parseJson', () => {
   describe('good case', () => {

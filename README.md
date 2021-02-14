@@ -24,9 +24,9 @@ Here is an example with an user data model with a mongoDb ID:
 
 ```ts
 import { ObjectId } from 'mongoDb';
-import { buildModel, buildType } from 'type-architect';
+import { typeArchitect, buildType } from 'type-architect';
 
-const userModel = buildModel({
+const userModel = typeArchitect.buildModel({
   kind: 'object',
   content: {
     _id: { kind: 'custom', content: 'ObjectId' },
@@ -45,7 +45,7 @@ The only prerequisites with Type Architect is that all model should be defined `
 You can easily parseJson with proper type (static type) and with dynamic type checking.
 
 ```ts
-import { parseJson } from 'type-architect';
+import { typeArchitect } from 'type-architect';
 
 const userJson = `{
   "_id": "507f1f77bcf86cd799439011",
@@ -55,7 +55,7 @@ const userJson = `{
 }`;
 
 // parsedUser is already typed with the type buildType<typeof userModel, { ObjectId: ObjectId }>
-const parsedUser = parseJson({
+const parsedUser = typeArchitect.parseJson({
   model: userModel,
   json: userJson,
   customMapping: { ObjectId: (idStr) => new ObjectId(idStr) },
@@ -66,7 +66,7 @@ const parsedUser = parseJson({
 
 ### The model type
 
-A model can be built with the function `buildModel`.
+A model can be built with the function `typeArchitect.buildModel`.
 
 The model type use an ADT style approach, each model looks like this:
 
@@ -94,7 +94,7 @@ For now, the supported primitives types are:
 For example, for a model representing a string, we will have:
 
 ```ts
-const primitiveModel = buildModel({
+const primitiveModel = typeArchitect.buildModel({
   kind: 'primitive',
   content: 'string',
 } as const);
@@ -107,7 +107,7 @@ The constant kind allows you to represent constant. A constant will be represent
 For example, to represent the following constant : `'FREE' | 'PENDING' | 'DONE'`, we will have:
 
 ```ts
-const constantModel = buildModel({
+const constantModel = typeArchitect.buildModel({
   kind: 'constant',
   content: ['FREE', 'PENDING', 'DONE'],
 } as const);
@@ -120,7 +120,7 @@ The array kind allows you to represent an array of some type. It is done by comb
 For example, if we want to represent an array of string, we will have:
 
 ```ts
-const arrayModel = buildModel({
+const arrayModel = typeArchitect.buildModel({
   kind: 'array',
   content: {
     kind: 'primitive',
@@ -136,7 +136,7 @@ The object kind allows you to represent object. It is done by combining model in
 For example, if we want to define an object position with two fields, we will have:
 
 ```ts
-const objectModel = buildModel({
+const objectModel = typeArchitect.buildModel({
   kind: 'object',
   content: {
     positionX: {
@@ -161,7 +161,7 @@ The content of a custom kind model is the name you want to give to this custom t
 For example, if we want to define the model of an error, we will have:
 
 ```ts
-const objectModel = buildModel({
+const objectModel = typeArchitect.buildModel({
   kind: 'custom',
   content: 'someError',
 } as const);
@@ -180,7 +180,7 @@ provide a `customMapping` to check and map the parsed string to the proper type:
 ```ts
 const jsonWithCustom = 'SOME ERROR TEXT';
 
-const parsedObjectWithCustom = parseJson({
+const parsedObjectWithCustom = typeArchitect.parseJson({
   model: objectModel,
   json: jsonWithCustom,
   customMapping: { someError: (errorMessage) => new Error(errorMessage) },
@@ -189,7 +189,7 @@ const parsedObjectWithCustom = parseJson({
 
 ### `buildModel`
 
-The `buildModel` function allows to build model with the proper structure.
+The `typeArchitect.buildModel` function allows to build model with the proper structure.
 Its parameter should always be define as a **const type**
 
 ### `buildType`
@@ -203,6 +203,10 @@ It can take two parameters:
 
 ### `parseJson`
 
-The `parseJson` function allows you to parse a JSON according to a model.
+The `typeArchitect.parseJson` function allows you to parse a JSON according to a model.
 The parsed value is statically type to the type derived from the model.
 During the parsing, there will also be some dynamic check performed.
+
+### `generate`
+
+The `typeArchitect.generate` function allows you to generate a random data from a model.

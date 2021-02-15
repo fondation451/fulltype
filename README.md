@@ -210,3 +210,8 @@ During the parsing, there will also be some dynamic check performed.
 ### `generate`
 
 The `typeArchitect.generate` function allows you to generate a random data from a model.
+
+### `generateObject`
+
+The `typeArchitect.generateObject` function allows you to generate a random data from an object kind model.
+You can provide with the field parameter `customFields` specific value for some fields of the generated object.

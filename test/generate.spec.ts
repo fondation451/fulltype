@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { buildModel } from '../src/typeArchitect/buildModel';
-import { generate } from '../src/typeArchitect/generate';
+import { generate, generateObject } from '../src/typeArchitect/generate';
 
 const TEST_ITERATION = 5;
 
@@ -217,6 +217,38 @@ describe('generate', () => {
         expect(typeof value).toEqual('string');
         expect(['ANOTHER_CONSTANT1', 'ANOTHER_CONSTANT2'].includes(value)).toEqual(true);
       });
+    });
+  });
+});
+
+describe('generateObject', () => {
+  it('should generate a random data from model with the given field value', () => {
+    executeTestSeveralTimes(() => {
+      const model = buildModel({
+        kind: 'object',
+        content: {
+          field1: { kind: 'primitive', content: 'boolean' },
+          field2: { kind: 'constant', content: ['CONSTANT1', 'CONSTANT2'] },
+          field3: { kind: 'primitive', content: 'string' },
+          field4: {
+            kind: 'array',
+            content: {
+              kind: 'primitive',
+              content: 'number',
+            },
+          },
+        },
+      } as const);
+
+      const generatedValue = generateObject({ model, customFields: { field1: true, field2: 'CONSTANT2' } });
+
+      expect(typeof generatedValue.field1).toEqual('boolean');
+      expect(generatedValue.field1).toEqual(true);
+      expect(typeof generatedValue.field2).toEqual('string');
+      expect(generatedValue.field2).toEqual('CONSTANT2');
+      expect(typeof generatedValue.field3).toEqual('string');
+      expect(Array.isArray(generatedValue.field4)).toEqual(true);
+      generatedValue.field4.forEach((value) => expect(typeof value).toEqual('number'));
     });
   });
 });

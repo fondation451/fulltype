@@ -3,15 +3,31 @@ import {
   buildPrimitiveType,
   customMappingType,
   modelType,
+  modelCaseObjectType,
   modelPrimitiveType,
   modelConstantType,
   modelObjectType,
 } from '../types';
 
-export { generate };
+export { generate, generateObject };
 
 const MAX_NUMBER = 100000000;
 const MAX_ARRAY_LENGTH = 5;
+
+function generateObject<modelCaseObjectT extends modelCaseObjectType, customMappingT extends customMappingType>({
+  model,
+  customGenerator = {} as { [key in keyof customMappingT]: (randomInt: number) => customMappingT[key] },
+  customFields = {},
+}: {
+  model: modelCaseObjectT;
+  customGenerator?: { [key in keyof customMappingT]: (randomInt: number) => customMappingT[key] };
+  customFields?: Partial<buildType<modelCaseObjectT, customMappingT>>;
+}): buildType<modelCaseObjectT, customMappingT> {
+  return {
+    ...generate({ model, customGenerator }),
+    ...customFields,
+  };
+}
 
 function generate<modelT extends modelType, customMappingT extends customMappingType>({
   model,

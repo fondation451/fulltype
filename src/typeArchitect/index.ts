@@ -1,5 +1,5 @@
 import { buildModel } from './buildModel';
-import { generate } from './generate';
+import { generate, generateObject } from './generate';
 import { parseJson } from './parseJson';
 
 export { typeArchitect };
@@ -7,5 +7,6 @@ export { typeArchitect };
 const typeArchitect = {
   buildModel,
   generate,
+  generateObject,
   parseJson,
 };

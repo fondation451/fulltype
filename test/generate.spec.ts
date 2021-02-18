@@ -242,6 +242,12 @@ describe('generateObject', () => {
 
       const generatedValue = generateObject({ model, customFields: { field1: true, field2: 'CONSTANT2' } });
 
+      const _typeCheck: {
+        field1: boolean;
+        field2: 'CONSTANT1' | 'CONSTANT2';
+        field3: string;
+        field4: number[];
+      } = generatedValue;
       expect(typeof generatedValue.field1).toEqual('boolean');
       expect(generatedValue.field1).toEqual(true);
       expect(typeof generatedValue.field2).toEqual('string');

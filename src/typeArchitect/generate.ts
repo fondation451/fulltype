@@ -115,6 +115,8 @@ function generateFromPrimitive<modelPrimitiveT extends modelPrimitiveType>({
       return (currentFieldName
         ? `${currentFieldName}_${random(MAX_NUMBER)}`
         : `STRING_${random(MAX_NUMBER)}`) as buildPrimitiveType<modelPrimitiveT>;
+    case 'undefined':
+      return undefined as buildPrimitiveType<modelPrimitiveT>;
     case 'void':
       return undefined as buildPrimitiveType<modelPrimitiveT>;
   }

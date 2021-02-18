@@ -42,7 +42,7 @@ type modelCaseArrayType = {
   content: modelType;
 };
 
-type modelPrimitiveType = 'boolean' | 'date' | 'string' | 'number' | 'void';
+type modelPrimitiveType = 'boolean' | 'date' | 'number' | 'string' | 'undefined' | 'void';
 
 type modelConstantType = readonly string[];
 

@@ -87,8 +87,9 @@ For now, the supported primitives types are:
 
 - `'boolean'`
 - `'date'`
-- `'string'`
 - `'number'`
+- `'string'`
+- `'undefined'`
 - `'void'`
 
 For example, for a model representing a string, we will have:

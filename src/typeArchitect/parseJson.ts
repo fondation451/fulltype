@@ -112,6 +112,12 @@ function checkAndParsePrimitiveJson<modelPrimitiveT extends modelPrimitiveType>(
       } else {
         throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
+    case 'undefined':
+      if (parsedJson === null || parsedJson === undefined) {
+        return undefined as buildPrimitiveType<modelPrimitiveT>;
+      } else {
+        throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
+      }
     case 'void':
       if (parsedJson === undefined) {
         return parsedJson as buildPrimitiveType<modelPrimitiveT>;

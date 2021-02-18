@@ -48,6 +48,20 @@ describe('generate', () => {
       });
     });
 
+    it('should generate a random undefined', () => {
+      executeTestSeveralTimes(() => {
+        const model = buildModel({
+          kind: 'primitive',
+          content: 'undefined',
+        } as const);
+
+        const generatedValue = generate({ model });
+
+        const _typeCheck: undefined = generatedValue;
+        expect(generatedValue).toEqual(undefined);
+      });
+    });
+
     it('should generate a random date', () => {
       executeTestSeveralTimes(() => {
         const model = buildModel({

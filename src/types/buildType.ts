@@ -32,10 +32,12 @@ type buildPrimitiveType<modelPrimitiveT extends modelPrimitiveType> = modelPrimi
   ? boolean
   : modelPrimitiveT extends 'date'
   ? Date
-  : modelPrimitiveT extends 'string'
-  ? string
   : modelPrimitiveT extends 'number'
   ? number
+  : modelPrimitiveT extends 'string'
+  ? string
+  : modelPrimitiveT extends 'undefined'
+  ? undefined
   : modelPrimitiveT extends 'void'
   ? void
   : never;

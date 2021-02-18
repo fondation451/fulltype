@@ -44,6 +44,19 @@ describe('parseJson', () => {
         expect(parsedJson).toEqual(JSON.parse(json));
       });
 
+      it('should parse a valid JSON (case undefined)', () => {
+        const model = buildModel({
+          kind: 'primitive',
+          content: 'undefined',
+        } as const);
+        const json = `null`;
+
+        const parsedJson = parseJson({ model, json });
+
+        const _typeCheck: undefined = parsedJson;
+        expect(parsedJson).toEqual(undefined);
+      });
+
       it('should parse a valid JSON (case date)', () => {
         const model = buildModel({
           kind: 'primitive',
@@ -119,25 +132,47 @@ describe('parseJson', () => {
       expect(parsedJson).toEqual(JSON.parse(json));
     });
 
-    it('should parse a valid JSON (object case)', () => {
-      const model = buildModel({
-        kind: 'object',
-        content: {
-          field1: { kind: 'primitive', content: 'boolean' },
-          field2: { kind: 'primitive', content: 'number' },
-          field3: { kind: 'primitive', content: 'string' },
-        },
-      } as const);
-      const json = `{
-          "field1": false,
-          "field2": 1,
-          "field3": "STRING"
-        }`;
+    describe('object case', () => {
+      it('should parse a valid JSON (case 1)', () => {
+        const model = buildModel({
+          kind: 'object',
+          content: {
+            field1: { kind: 'primitive', content: 'boolean' },
+            field2: { kind: 'primitive', content: 'number' },
+            field3: { kind: 'primitive', content: 'string' },
+          },
+        } as const);
+        const json = `{
+            "field1": false,
+            "field2": 1,
+            "field3": "STRING"
+          }`;
 
-      const parsedJson = parseJson({ model, json });
+        const parsedJson = parseJson({ model, json });
 
-      const _typeCheck: { field1: boolean; field2: number; field3: string } = parsedJson;
-      expect(parsedJson).toEqual(JSON.parse(json));
+        const _typeCheck: { field1: boolean; field2: number; field3: string } = parsedJson;
+        expect(parsedJson).toEqual(JSON.parse(json));
+      });
+
+      it('should parse a valid JSON (case 2 with undefined value)', () => {
+        const model = buildModel({
+          kind: 'object',
+          content: {
+            field1: { kind: 'primitive', content: 'boolean' },
+            field2: { kind: 'primitive', content: 'undefined' },
+            field3: { kind: 'primitive', content: 'string' },
+          },
+        } as const);
+        const json = `{
+            "field1": false,
+            "field3": "STRING"
+          }`;
+
+        const parsedJson = parseJson({ model, json });
+
+        const _typeCheck: { field1: boolean; field2: undefined; field3: string } = parsedJson;
+        expect(parsedJson).toEqual(JSON.parse(json));
+      });
     });
 
     it('should parse a valid JSON (general case)', () => {

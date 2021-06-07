@@ -6,6 +6,7 @@ import {
   modelPrimitiveType,
   modelConstantType,
   modelObjectType,
+  modelOrType,
 } from '../types';
 
 export { parseJson };
@@ -61,6 +62,25 @@ function checkAndParseJson<modelT extends modelType, customMappingT extends cust
         }) as buildType<modelT, customMappingT>;
       } else {
         throw buildObjectTypeError(parsedJson);
+      }
+    case 'or':
+      type modelOrT = modelT['content'] extends modelOrType ? modelT['content'] : never;
+      try {
+        return checkAndParseJson({
+          model: (model.content as modelOrT)[0],
+          customMapping,
+          parsedJson,
+        }) as buildType<modelT, customMappingT>;
+      } catch (err) {
+        try {
+          return checkAndParseJson({
+            model: (model.content as modelOrT)[1],
+            customMapping,
+            parsedJson,
+          }) as buildType<modelT, customMappingT>;
+        } catch (err) {
+          throw buildOrTypeError(parsedJson);
+        }
       }
     case 'array':
       if (Array.isArray(parsedJson)) {
@@ -163,6 +183,10 @@ function buildConstantTypeError(modelConstant: modelConstantType, parsedJson: un
 
 function buildObjectTypeError(parsedJson: unknown) {
   throw new Error(`Expected an object, but got ${parsedJson}`);
+}
+
+function buildOrTypeError(parsedJson: unknown) {
+  throw new Error(`Expected a conjoction, but got ${parsedJson}`);
 }
 
 function buildArrayTypeError(parsedJson: unknown) {

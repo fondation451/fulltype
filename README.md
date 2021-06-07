@@ -77,7 +77,7 @@ The model type use an ADT style approach, each model looks like this:
 }
 ```
 
-There are 5 differents model kind in Type Architect: `'primitive'`, `'constant'`, `'array'`, `'object'`, `'custom'`.
+There are 5 differents model kind in Type Architect: `'primitive'`, `'constant'`, `'array'`, `'object'`, `'or`, `'custom'`.
 
 #### `'primitive'` kind
 
@@ -149,6 +149,28 @@ const objectModel = typeArchitect.buildModel({
       content: 'number',
     },
   },
+} as const);
+```
+
+#### `'or'` kind
+
+The or kind allows you to represent conjoction. It is done by combining two models.
+
+For example, if we want to define an value which is boolean or a number, we will have:
+
+```ts
+const orModel = typeArchitect.buildModel({
+  kind: 'or',
+  content: [
+    {
+      kind: 'primitive',
+      content: 'boolean',
+    },
+    {
+      kind: 'primitive',
+      content: 'number',
+    },
+  ],
 } as const);
 ```
 

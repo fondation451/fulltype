@@ -7,6 +7,7 @@ import {
   modelPrimitiveType,
   modelConstantType,
   modelObjectType,
+  modelOrType,
 } from '../types';
 
 export { generate, generateObject };
@@ -66,6 +67,15 @@ function generateFromModel<modelT extends modelType, customMappingT extends cust
       type modelObjectT = modelT['content'] extends modelObjectType ? modelT['content'] : any;
       return generateFromObject({
         modelObject: model.content as modelObjectT,
+        customGenerator,
+        currentFieldName,
+      }) as buildType<modelT, customMappingT>;
+    case 'or':
+      type modelOrT = modelT['content'] extends modelOrType ? modelT['content'] : any;
+      const choice = Math.round(Math.random());
+
+      return generateFromModel({
+        model: (model.content as modelOrT)[choice],
         customGenerator,
         currentFieldName,
       }) as buildType<modelT, customMappingT>;

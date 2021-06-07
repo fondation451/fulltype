@@ -164,6 +164,23 @@ describe('generate', () => {
     });
   });
 
+  it('should generate a or conjunction', () => {
+    executeTestSeveralTimes(() => {
+      const model = buildModel({
+        kind: 'or',
+        content: [
+          { kind: 'primitive', content: 'boolean' },
+          { kind: 'primitive', content: 'number' },
+        ],
+      } as const);
+
+      const generatedValue = generate({ model });
+
+      const _typeCheck: boolean | number = generatedValue;
+      expect(typeof generatedValue === 'boolean' || typeof generatedValue === 'number').toEqual(true);
+    });
+  });
+
   it('should generate a random data from model (general case)', () => {
     executeTestSeveralTimes(() => {
       const model = buildModel({

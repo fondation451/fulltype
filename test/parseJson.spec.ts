@@ -175,6 +175,28 @@ describe('parseJson', () => {
       });
     });
 
+    it('should parse a valid JSON (or case)', () => {
+      const model = buildModel({
+        kind: 'or',
+        content: [
+          {
+            kind: 'primitive',
+            content: 'boolean',
+          },
+          {
+            kind: 'primitive',
+            content: 'number',
+          },
+        ],
+      } as const);
+      const json = `3`;
+
+      const parsedJson = parseJson({ model, json });
+
+      const _typeCheck: boolean | number = parsedJson;
+      expect(parsedJson).toEqual(JSON.parse(json));
+    });
+
     it('should parse a valid JSON (general case)', () => {
       const model = buildModel({
         kind: 'object',

@@ -1,25 +1,28 @@
 export type {
   modelType,
-  modelCasePrimitiveType,
+  modelCaseArrayType,
   modelCaseConstantType,
   modelCaseCustomType,
   modelCaseObjectType,
-  modelCaseArrayType,
-  modelPrimitiveType,
+  modelCaseOrType,
+  modelCasePrimitiveType,
   modelConstantType,
   modelObjectType,
+  modelOrType,
+  modelPrimitiveType,
 };
 
 type modelType =
-  | modelCasePrimitiveType
+  | modelCaseArrayType
   | modelCaseConstantType
   | modelCaseCustomType
   | modelCaseObjectType
-  | modelCaseArrayType;
+  | modelCaseOrType
+  | modelCasePrimitiveType;
 
-type modelCasePrimitiveType = {
-  kind: 'primitive';
-  content: modelPrimitiveType;
+type modelCaseArrayType = {
+  kind: 'array';
+  content: modelType;
 };
 
 type modelCaseConstantType = {
@@ -37,13 +40,24 @@ type modelCaseObjectType = {
   content: modelObjectType;
 };
 
-type modelCaseArrayType = {
-  kind: 'array';
-  content: modelType;
-};
+type modelCaseOrType = { kind: 'or'; content: modelOrType };
 
-type modelPrimitiveType = 'boolean' | 'date' | 'number' | 'string' | 'undefined' | 'void';
+type modelCasePrimitiveType = {
+  kind: 'primitive';
+  content: modelPrimitiveType;
+};
 
 type modelConstantType = readonly string[];
 
 type modelObjectType = { [key in string]: modelType };
+
+type modelOrType = Readonly<[modelOrCaseType, modelOrCaseType]>;
+
+type modelOrCaseType =
+  | modelCaseArrayType
+  | modelCaseConstantType
+  | modelCaseCustomType
+  | modelCaseObjectType
+  | modelCasePrimitiveType;
+
+type modelPrimitiveType = 'boolean' | 'date' | 'number' | 'string' | 'undefined' | 'void';

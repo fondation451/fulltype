@@ -41,7 +41,7 @@
     "build": "tsc",
     "compile": "yarn build && yarn test && yarn lint",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet",
+    "lint": "eslint '{test,src}/**/*.{js,ts,tsx}' --quiet",
     "postversion": "git push && git push --tags",
     "prepare": "yarn build",
     "prepublishOnly": "yarn test && yarn lint",

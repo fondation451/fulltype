@@ -15,6 +15,7 @@ describe('generate', () => {
 
         const generatedValue = generate({ model });
 
+        // eslint-disable-next-line
         const _typeCheck: number = generatedValue;
         expect(typeof generatedValue).toEqual('number');
       });
@@ -29,6 +30,7 @@ describe('generate', () => {
 
         const generatedValue = generate({ model });
 
+        // eslint-disable-next-line
         const _typeCheck: boolean = generatedValue;
         expect(typeof generatedValue).toEqual('boolean');
       });
@@ -43,6 +45,7 @@ describe('generate', () => {
 
         const generatedValue = generate({ model });
 
+        // eslint-disable-next-line
         const _typeCheck: string = generatedValue;
         expect(typeof generatedValue).toEqual('string');
       });
@@ -57,6 +60,7 @@ describe('generate', () => {
 
         const generatedValue = generate({ model });
 
+        // eslint-disable-next-line
         const _typeCheck: undefined = generatedValue;
         expect(generatedValue).toEqual(undefined);
       });
@@ -71,6 +75,7 @@ describe('generate', () => {
 
         const generatedValue = generate({ model });
 
+        // eslint-disable-next-line
         const _typeCheck: Date = generatedValue;
         expect(generatedValue instanceof Date).toEqual(true);
       });
@@ -86,6 +91,7 @@ describe('generate', () => {
 
       const generatedValue = generate({ model });
 
+      // eslint-disable-next-line
       const _typeCheck: 'CONSTANT_1' | 'CONSTANT_2' = generatedValue;
       expect(typeof generatedValue).toEqual('string');
       expect(['CONSTANT_1', 'CONSTANT_2'].includes(generatedValue)).toEqual(true);
@@ -105,6 +111,7 @@ describe('generate', () => {
           customGenerator: { CUSTOM_TYPE: (randomValue) => `CUSTOM_STRING_${randomValue}` },
         });
 
+        // eslint-disable-next-line
         const _typeCheck: string = generatedValue;
         expect(generatedValue.startsWith('CUSTOM_STRING_')).toEqual(true);
       });
@@ -119,6 +126,7 @@ describe('generate', () => {
 
         const generatedValue = generate({ model, customGenerator: { Mongo_ID: () => new ObjectId() } });
 
+        // eslint-disable-next-line
         const _typeCheck: ObjectId = generatedValue;
         expect(ObjectId.isValid(generatedValue)).toEqual(true);
       });
@@ -137,6 +145,7 @@ describe('generate', () => {
 
       const generatedValue = generate({ model });
 
+      // eslint-disable-next-line
       const _typeCheck: boolean[] = generatedValue;
       expect(Array.isArray(generatedValue)).toEqual(true);
       generatedValue.forEach((value) => expect(typeof value).toEqual('boolean'));
@@ -156,6 +165,7 @@ describe('generate', () => {
 
       const generatedValue = generate({ model });
 
+      // eslint-disable-next-line
       const _typeCheck: { field1: boolean; field2: number; field3: string } = generatedValue;
       expect(typeof generatedValue.field1).toEqual('boolean');
       expect(typeof generatedValue.field2).toEqual('number');
@@ -176,6 +186,7 @@ describe('generate', () => {
 
       const generatedValue = generate({ model });
 
+      // eslint-disable-next-line
       const _typeCheck: boolean | number = generatedValue;
       expect(typeof generatedValue === 'boolean' || typeof generatedValue === 'number').toEqual(true);
     });
@@ -222,6 +233,7 @@ describe('generate', () => {
 
       const generatedValue = generate({ model });
 
+      // eslint-disable-next-line
       const _typeCheck: {
         field1: boolean;
         field2: Array<{
@@ -273,6 +285,7 @@ describe('generateObject', () => {
 
       const generatedValue = generateObject({ model, customFields: { field1: true, field2: 'CONSTANT2' } });
 
+      // eslint-disable-next-line
       const _typeCheck: {
         field1: boolean;
         field2: 'CONSTANT1' | 'CONSTANT2';

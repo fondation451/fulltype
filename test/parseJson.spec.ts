@@ -14,6 +14,7 @@ describe('parseJson', () => {
 
         const parsedJson = parseJson({ model, json });
 
+        // eslint-disable-next-line
         const _typeCheck: number = parsedJson;
         expect(parsedJson).toEqual(JSON.parse(json));
       });
@@ -27,6 +28,7 @@ describe('parseJson', () => {
 
         const parsedJson = parseJson({ model, json });
 
+        // eslint-disable-next-line
         const _typeCheck: boolean = parsedJson;
         expect(parsedJson).toEqual(JSON.parse(json));
       });
@@ -40,6 +42,7 @@ describe('parseJson', () => {
 
         const parsedJson = parseJson({ model, json });
 
+        // eslint-disable-next-line
         const _typeCheck: string = parsedJson;
         expect(parsedJson).toEqual(JSON.parse(json));
       });
@@ -53,6 +56,7 @@ describe('parseJson', () => {
 
         const parsedJson = parseJson({ model, json });
 
+        // eslint-disable-next-line
         const _typeCheck: undefined = parsedJson;
         expect(parsedJson).toEqual(undefined);
       });
@@ -66,6 +70,7 @@ describe('parseJson', () => {
 
         const parsedJson = parseJson({ model, json });
 
+        // eslint-disable-next-line
         const _typeCheck: Date = parsedJson;
         expect(parsedJson.toISOString()).toEqual(JSON.parse(json));
       });
@@ -80,6 +85,7 @@ describe('parseJson', () => {
 
       const parsedJson = parseJson({ model, json });
 
+      // eslint-disable-next-line
       const _typeCheck: 'CONSTANT_1' | 'CONSTANT_2' = parsedJson;
       expect(parsedJson).toEqual(JSON.parse(json));
     });
@@ -98,6 +104,7 @@ describe('parseJson', () => {
           customMapping: { CUSTOM_TYPE: (value) => `constructor(${value})` },
         });
 
+        // eslint-disable-next-line
         const _typeCheck: string = parsedJson;
         expect(parsedJson).toEqual('constructor(CUSTOM_TYPE_VALUE)');
       });
@@ -111,6 +118,7 @@ describe('parseJson', () => {
 
         const parsedJson = parseJson({ model, json, customMapping: { Mongo_ID: (idStr) => new ObjectId(idStr) } });
 
+        // eslint-disable-next-line
         const _typeCheck: ObjectId = parsedJson;
         expect(JSON.stringify(parsedJson)).toEqual(json);
       });
@@ -128,6 +136,7 @@ describe('parseJson', () => {
 
       const parsedJson = parseJson({ model, json });
 
+      // eslint-disable-next-line
       const _typeCheck: boolean[] = parsedJson;
       expect(parsedJson).toEqual(JSON.parse(json));
     });
@@ -150,6 +159,7 @@ describe('parseJson', () => {
 
         const parsedJson = parseJson({ model, json });
 
+        // eslint-disable-next-line
         const _typeCheck: { field1: boolean; field2: number; field3: string } = parsedJson;
         expect(parsedJson).toEqual(JSON.parse(json));
       });
@@ -170,6 +180,7 @@ describe('parseJson', () => {
 
         const parsedJson = parseJson({ model, json });
 
+        // eslint-disable-next-line
         const _typeCheck: { field1: boolean; field2: undefined; field3: string } = parsedJson;
         expect(parsedJson).toEqual(JSON.parse(json));
       });
@@ -193,6 +204,7 @@ describe('parseJson', () => {
 
       const parsedJson = parseJson({ model, json });
 
+      // eslint-disable-next-line
       const _typeCheck: boolean | number = parsedJson;
       expect(parsedJson).toEqual(JSON.parse(json));
     });
@@ -253,6 +265,7 @@ describe('parseJson', () => {
 
       const parsedJson = parseJson({ model, json });
 
+      // eslint-disable-next-line
       const _typeCheck: {
         field1: boolean;
         field2: Array<{

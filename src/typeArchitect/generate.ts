@@ -1,13 +1,13 @@
 import {
-  buildType,
-  buildPrimitiveType,
-  customMappingType,
+  CustomMapping,
   Model,
-  ModelObject,
-  ModelPrimitiveContent,
   ModelConstantContent,
+  ModelObject,
   ModelObjectContent,
   ModelOrContent,
+  ModelPrimitiveContent,
+  Type,
+  TypePrimitive,
 } from '../types';
 
 export { generate, generateObject };
@@ -15,79 +15,79 @@ export { generate, generateObject };
 const MAX_NUMBER = 100000000;
 const MAX_ARRAY_LENGTH = 5;
 
-function generateObject<modelCaseObjectT extends ModelObject, customMappingT extends customMappingType>({
+function generateObject<ModelObjectT extends ModelObject, CustomMappingT extends CustomMapping>({
   model,
-  customGenerator = {} as { [key in keyof customMappingT]: (randomInt: number) => customMappingT[key] },
+  customGenerator = {} as { [key in keyof CustomMappingT]: (randomInt: number) => CustomMappingT[key] },
   customFields = {},
 }: {
-  model: modelCaseObjectT;
-  customGenerator?: { [key in keyof customMappingT]: (randomInt: number) => customMappingT[key] };
-  customFields?: Partial<buildType<modelCaseObjectT, customMappingT>>;
-}): buildType<modelCaseObjectT, customMappingT> {
+  model: ModelObjectT;
+  customGenerator?: { [key in keyof CustomMappingT]: (randomInt: number) => CustomMappingT[key] };
+  customFields?: Partial<Type<ModelObjectT, CustomMappingT>>;
+}): Type<ModelObjectT, CustomMappingT> {
   return {
     ...generate({ model, customGenerator }),
     ...customFields,
   };
 }
 
-function generate<modelT extends Model, customMappingT extends customMappingType>({
+function generate<ModelT extends Model, CustomMappingT extends CustomMapping>({
   model,
-  customGenerator = {} as { [key in keyof customMappingT]: (randomInt: number) => customMappingT[key] },
+  customGenerator = {} as { [key in keyof CustomMappingT]: (randomInt: number) => CustomMappingT[key] },
 }: {
-  model: modelT;
-  customGenerator?: { [key in keyof customMappingT]: (randomInt: number) => customMappingT[key] };
-}): buildType<modelT, customMappingT> {
+  model: ModelT;
+  customGenerator?: { [key in keyof CustomMappingT]: (randomInt: number) => CustomMappingT[key] };
+}): Type<ModelT, CustomMappingT> {
   return generateFromModel({ model, customGenerator });
 }
 
-function generateFromModel<modelT extends Model, customMappingT extends customMappingType>({
+function generateFromModel<ModelT extends Model, CustomMappingT extends CustomMapping>({
   model,
   customGenerator,
   currentFieldName,
 }: {
-  model: modelT;
-  customGenerator: { [key in keyof customMappingT]: (randomInt: number) => customMappingT[key] };
+  model: ModelT;
+  customGenerator: { [key in keyof CustomMappingT]: (randomInt: number) => CustomMappingT[key] };
   currentFieldName?: string;
-}): buildType<modelT, customMappingT> {
+}): Type<ModelT, CustomMappingT> {
   switch (model.kind) {
     case 'primitive':
-      type modelPrimitiveT = modelT['content'] extends ModelPrimitiveContent ? modelT['content'] : any;
-      return generateFromPrimitive({ modelPrimitive: model.content as modelPrimitiveT, currentFieldName }) as buildType<
-        modelT,
-        customMappingT
-      >;
+      type ModelPrimitiveContentT = ModelT['content'] extends ModelPrimitiveContent ? ModelT['content'] : any;
+      return generateFromPrimitive({
+        modelPrimitive: model.content as ModelPrimitiveContentT,
+        currentFieldName,
+      }) as Type<ModelT, CustomMappingT>;
     case 'constant':
-      type modelConstantT = modelT['content'] extends ModelConstantContent ? modelT['content'] : any;
-      const constants = model.content as modelConstantT;
+      type ModelConstantContentT = ModelT['content'] extends ModelConstantContent ? ModelT['content'] : any;
+      const constants = model.content as ModelConstantContentT;
 
-      return constants[random(constants.length)] as buildType<modelT, customMappingT>;
+      return constants[random(constants.length)] as Type<ModelT, CustomMappingT>;
     case 'custom':
-      return customGenerator[model.content as string](random(MAX_NUMBER)) as buildType<modelT, customMappingT>;
+      return customGenerator[model.content as string](random(MAX_NUMBER)) as Type<ModelT, CustomMappingT>;
     case 'object':
-      type modelObjectT = modelT['content'] extends ModelObjectContent ? modelT['content'] : any;
+      type ModelObjectContentT = ModelT['content'] extends ModelObjectContent ? ModelT['content'] : any;
       return generateFromObject({
-        modelObject: model.content as modelObjectT,
+        modelObject: model.content as ModelObjectContentT,
         customGenerator,
         currentFieldName,
-      }) as buildType<modelT, customMappingT>;
+      }) as Type<ModelT, CustomMappingT>;
     case 'or':
-      type modelOrT = modelT['content'] extends ModelOrContent ? modelT['content'] : any;
+      type ModelOrT = ModelT['content'] extends ModelOrContent ? ModelT['content'] : any;
       const choice = Math.round(Math.random());
 
       return generateFromModel({
-        model: (model.content as modelOrT)[choice],
+        model: (model.content as ModelOrT)[choice],
         customGenerator,
         currentFieldName,
-      }) as buildType<modelT, customMappingT>;
+      }) as Type<ModelT, CustomMappingT>;
     case 'array':
-      type modelArrayItemT = modelT['content'] extends Model ? modelT['content'] : any;
-      const generatedArray = [] as buildType<modelT, customMappingT>;
+      type ModelArrayContentT = ModelT['content'] extends Model ? ModelT['content'] : any;
+      const generatedArray = [] as Type<ModelT, CustomMappingT>;
       const generatedArrayLength = random(MAX_ARRAY_LENGTH);
 
       for (let index = 0; index < generatedArrayLength; index++) {
         generatedArray.push(
           generateFromModel({
-            model: model.content as modelArrayItemT,
+            model: model.content as ModelArrayContentT,
             customGenerator,
             currentFieldName: currentFieldName ? `${currentFieldName}_${index}` : undefined,
           }),
@@ -98,16 +98,16 @@ function generateFromModel<modelT extends Model, customMappingT extends customMa
   }
 }
 
-function generateFromPrimitive<modelPrimitiveT extends ModelPrimitiveContent>({
+function generateFromPrimitive<ModelPrimitiveContentT extends ModelPrimitiveContent>({
   modelPrimitive,
   currentFieldName,
 }: {
-  modelPrimitive: modelPrimitiveT;
+  modelPrimitive: ModelPrimitiveContentT;
   currentFieldName?: string;
-}): buildPrimitiveType<modelPrimitiveT> {
+}): TypePrimitive<ModelPrimitiveContentT> {
   switch (modelPrimitive) {
     case 'boolean':
-      return (random(2) === 0 ? true : false) as buildPrimitiveType<modelPrimitiveT>;
+      return (random(2) === 0 ? true : false) as TypePrimitive<ModelPrimitiveContentT>;
     case 'date':
       const day = random(28);
       const month = random(13);
@@ -118,37 +118,37 @@ function generateFromPrimitive<modelPrimitiveT extends ModelPrimitiveContent>({
       date.setMonth(month);
       date.setFullYear(year);
 
-      return date as buildPrimitiveType<modelPrimitiveT>;
+      return date as TypePrimitive<ModelPrimitiveContentT>;
     case 'number':
-      return random(MAX_NUMBER) as buildPrimitiveType<modelPrimitiveT>;
+      return random(MAX_NUMBER) as TypePrimitive<ModelPrimitiveContentT>;
     case 'string':
       return (currentFieldName
         ? `${currentFieldName}_${random(MAX_NUMBER)}`
-        : `STRING_${random(MAX_NUMBER)}`) as buildPrimitiveType<modelPrimitiveT>;
+        : `STRING_${random(MAX_NUMBER)}`) as TypePrimitive<ModelPrimitiveContentT>;
     case 'undefined':
-      return undefined as buildPrimitiveType<modelPrimitiveT>;
+      return undefined as TypePrimitive<ModelPrimitiveContentT>;
     case 'void':
-      return undefined as buildPrimitiveType<modelPrimitiveT>;
+      return undefined as TypePrimitive<ModelPrimitiveContentT>;
   }
 
-  return undefined as buildPrimitiveType<modelPrimitiveT>;
+  return undefined as TypePrimitive<ModelPrimitiveContentT>;
 }
 
-function generateFromObject<modelObjectT extends ModelObjectContent, customMappingT extends customMappingType>({
+function generateFromObject<ModelObjectContentT extends ModelObjectContent, CustomMappingT extends CustomMapping>({
   modelObject,
   customGenerator,
   currentFieldName,
 }: {
-  modelObject: modelObjectT;
-  customGenerator: { [key in keyof customMappingT]: (randomInt: number) => customMappingT[key] };
+  modelObject: ModelObjectContentT;
+  customGenerator: { [key in keyof CustomMappingT]: (randomInt: number) => CustomMappingT[key] };
   currentFieldName?: string;
-}): { [key in keyof modelObjectT]: buildType<modelObjectT[key], customMappingT> } {
+}): { [key in keyof ModelObjectContentT]: Type<ModelObjectContentT[key], CustomMappingT> } {
   const generatedObject = {} as {
-    [key in keyof modelObjectT]: buildType<modelObjectT[key], customMappingT>;
+    [key in keyof ModelObjectContentT]: Type<ModelObjectContentT[key], CustomMappingT>;
   };
 
   for (const key in modelObject) {
-    generatedObject[key] = generateFromModel<modelObjectT[typeof key], customMappingT>({
+    generatedObject[key] = generateFromModel<ModelObjectContentT[typeof key], CustomMappingT>({
       model: modelObject[key],
       customGenerator,
       currentFieldName: currentFieldName ? `${currentFieldName}_${key}` : key,

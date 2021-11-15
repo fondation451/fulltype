@@ -1,7 +1,7 @@
 import {
-  buildType,
-  buildPrimitiveType,
-  customMappingType,
+  Type,
+  TypePrimitive,
+  CustomMapping,
   Model,
   ModelPrimitiveContent,
   ModelConstantContent,
@@ -11,101 +11,101 @@ import {
 
 export { parseJson };
 
-function parseJson<modelT extends Model, customMappingT extends customMappingType>({
+function parseJson<ModelT extends Model, CustomMappingT extends CustomMapping>({
   model,
-  customMapping = {} as { [key in keyof customMappingT]: (jsonValue: string) => customMappingT[key] },
+  customMapping = {} as { [key in keyof CustomMappingT]: (jsonValue: string) => CustomMappingT[key] },
   json,
 }: {
-  model: modelT;
-  customMapping?: { [key in keyof customMappingT]: (jsonValue: string) => customMappingT[key] };
+  model: ModelT;
+  customMapping?: { [key in keyof CustomMappingT]: (jsonValue: string) => CustomMappingT[key] };
   json: string;
-}): buildType<modelT, customMappingT> {
+}): Type<ModelT, CustomMappingT> {
   const parsedJson = JSON.parse(json) as unknown;
 
   return checkAndParseJson({ model, customMapping, parsedJson });
 }
 
-function checkAndParseJson<modelT extends Model, customMappingT extends customMappingType>({
+function checkAndParseJson<ModelT extends Model, CustomMappingT extends CustomMapping>({
   model,
   customMapping,
   parsedJson,
 }: {
-  model: modelT;
-  customMapping: { [key in keyof customMappingT]: (jsonValue: string) => customMappingT[key] };
+  model: ModelT;
+  customMapping: { [key in keyof CustomMappingT]: (jsonValue: string) => CustomMappingT[key] };
   parsedJson: unknown;
-}): buildType<modelT, customMappingT> {
+}): Type<ModelT, CustomMappingT> {
   switch (model.kind) {
     case 'primitive':
-      type modelPrimitiveT = modelT['content'] extends ModelPrimitiveContent ? modelT['content'] : any;
-      return checkAndParsePrimitiveJson(model.content as modelPrimitiveT, parsedJson) as buildType<
-        modelT,
-        customMappingT
+      type ModelPrimitiveContentT = ModelT['content'] extends ModelPrimitiveContent ? ModelT['content'] : any;
+      return checkAndParsePrimitiveJson(model.content as ModelPrimitiveContentT, parsedJson) as Type<
+        ModelT,
+        CustomMappingT
       >;
     case 'constant':
-      type modelConstantT = modelT['content'] extends ModelConstantContent ? modelT['content'] : any;
-      const modelConstant = model.content as modelConstantT;
+      type ModelConstantContentT = ModelT['content'] extends ModelConstantContent ? ModelT['content'] : any;
+      const modelConstant = model.content as ModelConstantContentT;
 
       if (typeof parsedJson === 'string' && modelConstant.includes(parsedJson)) {
-        return parsedJson as buildType<modelT, customMappingT>;
+        return parsedJson as Type<ModelT, CustomMappingT>;
       } else {
         throw buildConstantTypeError(modelConstant, parsedJson);
       }
     case 'custom':
-      return customMapping[model.content as string](parsedJson as string) as buildType<modelT, customMappingT>;
+      return customMapping[model.content as string](parsedJson as string) as Type<ModelT, CustomMappingT>;
     case 'object':
       if (typeof parsedJson === 'object') {
-        type modelObjectT = modelT['content'] extends ModelObjectContent ? modelT['content'] : any;
+        type ModelObjectContentT = ModelT['content'] extends ModelObjectContent ? ModelT['content'] : any;
         return checkAndParseObjectJson({
-          modelObject: model.content as modelObjectT,
+          modelObject: model.content as ModelObjectContentT,
           customMapping,
           parsedJson,
-        }) as buildType<modelT, customMappingT>;
+        }) as Type<ModelT, CustomMappingT>;
       } else {
         throw buildObjectTypeError(parsedJson);
       }
     case 'or':
-      type modelOrT = modelT['content'] extends ModelOrContent ? modelT['content'] : never;
+      type ModelOrT = ModelT['content'] extends ModelOrContent ? ModelT['content'] : never;
       try {
         return checkAndParseJson({
-          model: (model.content as modelOrT)[0],
+          model: (model.content as ModelOrT)[0],
           customMapping,
           parsedJson,
-        }) as buildType<modelT, customMappingT>;
+        }) as Type<ModelT, CustomMappingT>;
       } catch (err) {
         try {
           return checkAndParseJson({
-            model: (model.content as modelOrT)[1],
+            model: (model.content as ModelOrT)[1],
             customMapping,
             parsedJson,
-          }) as buildType<modelT, customMappingT>;
+          }) as Type<ModelT, CustomMappingT>;
         } catch (err) {
           throw buildOrTypeError(parsedJson);
         }
       }
     case 'array':
       if (Array.isArray(parsedJson)) {
-        type modelArrayItemT = modelT['content'] extends Model ? modelT['content'] : any;
+        type ModelArrayContentT = ModelT['content'] extends Model ? ModelT['content'] : any;
         return ((parsedJson as Array<unknown>).map((arrayItem) =>
           checkAndParseJson({
-            model: model.content as modelArrayItemT,
+            model: model.content as ModelArrayContentT,
             customMapping,
             parsedJson: arrayItem,
           }),
-        ) as unknown) as buildType<modelT, customMappingT>;
+        ) as unknown) as Type<ModelT, CustomMappingT>;
       } else {
         throw buildArrayTypeError(parsedJson);
       }
   }
 }
 
-function checkAndParsePrimitiveJson<modelPrimitiveT extends ModelPrimitiveContent>(
-  modelPrimitive: modelPrimitiveT,
+function checkAndParsePrimitiveJson<ModelPrimitiveContentT extends ModelPrimitiveContent>(
+  modelPrimitive: ModelPrimitiveContentT,
   parsedJson: unknown,
-): buildPrimitiveType<modelPrimitiveT> {
+): TypePrimitive<ModelPrimitiveContentT> {
   switch (modelPrimitive) {
     case 'boolean':
       if (typeof parsedJson === 'boolean') {
-        return parsedJson as buildPrimitiveType<modelPrimitiveT>;
+        return parsedJson as TypePrimitive<ModelPrimitiveContentT>;
       } else {
         throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
@@ -113,7 +113,7 @@ function checkAndParsePrimitiveJson<modelPrimitiveT extends ModelPrimitiveConten
       if (typeof parsedJson === 'string') {
         const parsedDate = new Date(parsedJson);
         if (!isNaN(parsedDate.getDate())) {
-          return parsedDate as buildPrimitiveType<modelPrimitiveT>;
+          return parsedDate as TypePrimitive<ModelPrimitiveContentT>;
         } else {
           throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
         }
@@ -122,25 +122,25 @@ function checkAndParsePrimitiveJson<modelPrimitiveT extends ModelPrimitiveConten
       }
     case 'number':
       if (typeof parsedJson === 'number') {
-        return parsedJson as buildPrimitiveType<modelPrimitiveT>;
+        return parsedJson as TypePrimitive<ModelPrimitiveContentT>;
       } else {
         throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'string':
       if (typeof parsedJson === 'string') {
-        return parsedJson as buildPrimitiveType<modelPrimitiveT>;
+        return parsedJson as TypePrimitive<ModelPrimitiveContentT>;
       } else {
         throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'undefined':
       if (parsedJson === null || parsedJson === undefined) {
-        return undefined as buildPrimitiveType<modelPrimitiveT>;
+        return undefined as TypePrimitive<ModelPrimitiveContentT>;
       } else {
         throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
     case 'void':
       if (parsedJson === undefined) {
-        return parsedJson as buildPrimitiveType<modelPrimitiveT>;
+        return parsedJson as TypePrimitive<ModelPrimitiveContentT>;
       } else {
         throw buildPrimitiveTypeError(modelPrimitive, parsedJson);
       }
@@ -149,21 +149,21 @@ function checkAndParsePrimitiveJson<modelPrimitiveT extends ModelPrimitiveConten
   throw buildTypeEngineError();
 }
 
-function checkAndParseObjectJson<modelObjectT extends ModelObjectContent, customMappingT extends customMappingType>({
+function checkAndParseObjectJson<ModelObjectContentT extends ModelObjectContent, CustomMappingT extends CustomMapping>({
   modelObject,
   customMapping,
   parsedJson,
 }: {
-  modelObject: modelObjectT;
-  customMapping: { [key in keyof customMappingT]: (jsonValue: string) => customMappingT[key] };
+  modelObject: ModelObjectContentT;
+  customMapping: { [key in keyof CustomMappingT]: (jsonValue: string) => CustomMappingT[key] };
   parsedJson: unknown;
-}): { [key in keyof modelObjectT]: buildType<modelObjectT[key], customMappingT> } {
+}): { [key in keyof ModelObjectContentT]: Type<ModelObjectContentT[key], CustomMappingT> } {
   const parsedObjectJson = {} as {
-    [key in keyof modelObjectT]: buildType<modelObjectT[key], customMappingT>;
+    [key in keyof ModelObjectContentT]: Type<ModelObjectContentT[key], CustomMappingT>;
   };
 
   for (const key in modelObject) {
-    parsedObjectJson[key] = checkAndParseJson<modelObjectT[typeof key], customMappingT>({
+    parsedObjectJson[key] = checkAndParseJson<ModelObjectContentT[typeof key], CustomMappingT>({
       model: modelObject[key],
       customMapping,
       parsedJson: (parsedJson as any)[key],

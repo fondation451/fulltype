@@ -1,2 +1,2 @@
-export * from './buildType';
-export * from './types';
+export * from './Type';
+export * from './Model';

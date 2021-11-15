@@ -24,7 +24,7 @@ Here is an example with an user data model with a mongoDb ID:
 
 ```ts
 import { ObjectId } from 'mongoDb';
-import { typeArchitect, buildType } from 'type-architect';
+import { typeArchitect, Type } from 'type-architect';
 
 const userModel = typeArchitect.buildModel({
   kind: 'object',
@@ -37,7 +37,7 @@ const userModel = typeArchitect.buildModel({
 } as const);
 // "as const" is mandatory, Type Architecte can only work with const type
 
-type userType = buildType<typeof userModel, { ObjectId: ObjectId }>;
+type userType = Type<typeof userModel, { ObjectId: ObjectId }>;
 ```
 
 The only prerequisites with Type Architect is that all model should be defined `as const` (with a const type).
@@ -54,7 +54,7 @@ const userJson = `{
   "passwordHash": "qiyh4XPJGsOZ2MEAyLkfWqeQ"
 }`;
 
-// parsedUser is already typed with the type buildType<typeof userModel, { ObjectId: ObjectId }>
+// parsedUser is already typed with the type Type<typeof userModel, { ObjectId: ObjectId }>
 const parsedUser = typeArchitect.parseJson({
   model: userModel,
   json: userJson,
@@ -194,7 +194,7 @@ If you want to compute the type of a model where there are custom kind model, yo
 a mapping of the custom kind model present from its name to an actual type:
 
 ```ts
-type objectModelWithCustomType = buildType<typeof objectModel, { someError: Error }>;
+type objectModelWithCustomType = Type<typeof objectModel, { someError: Error }>;
 ```
 
 In the same way, for JSON parsing, when there are custom kind model in your model, you need to
@@ -215,13 +215,13 @@ const parsedObjectWithCustom = typeArchitect.parseJson({
 The `typeArchitect.buildModel` function allows to build model with the proper structure.
 Its parameter should always be define as a **const type**
 
-### `buildType`
+### `Type`
 
-`buildType` is a generic type which can derive a type from a model.
+`Type` is a generic type which can derive a type from a model.
 It can take two parameters:
 
 - the type of the model to type: `typeof yourModel` (mandatory)
-- a `customMappingType` for the custom kind present in the model. It should be the type
+- a `CustomMapping` for the custom kind present in the model. It should be the type
   of an object the name of the custom kind of the model as key and their actual type as value
 
 ### `parseJson`

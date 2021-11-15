@@ -2,6 +2,6 @@ import { Model } from '../types';
 
 export { buildModel };
 
-function buildModel<modelT extends Model>(model: modelT) {
+function buildModel<ModelT extends Model>(model: ModelT) {
   return model;
 }

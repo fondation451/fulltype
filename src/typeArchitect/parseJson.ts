@@ -2,16 +2,16 @@ import {
   buildType,
   buildPrimitiveType,
   customMappingType,
-  modelType,
-  modelPrimitiveType,
-  modelConstantType,
-  modelObjectType,
-  modelOrType,
+  Model,
+  ModelPrimitiveContent,
+  ModelConstantContent,
+  ModelObjectContent,
+  ModelOrContent,
 } from '../types';
 
 export { parseJson };
 
-function parseJson<modelT extends modelType, customMappingT extends customMappingType>({
+function parseJson<modelT extends Model, customMappingT extends customMappingType>({
   model,
   customMapping = {} as { [key in keyof customMappingT]: (jsonValue: string) => customMappingT[key] },
   json,
@@ -25,7 +25,7 @@ function parseJson<modelT extends modelType, customMappingT extends customMappin
   return checkAndParseJson({ model, customMapping, parsedJson });
 }
 
-function checkAndParseJson<modelT extends modelType, customMappingT extends customMappingType>({
+function checkAndParseJson<modelT extends Model, customMappingT extends customMappingType>({
   model,
   customMapping,
   parsedJson,
@@ -36,13 +36,13 @@ function checkAndParseJson<modelT extends modelType, customMappingT extends cust
 }): buildType<modelT, customMappingT> {
   switch (model.kind) {
     case 'primitive':
-      type modelPrimitiveT = modelT['content'] extends modelPrimitiveType ? modelT['content'] : any;
+      type modelPrimitiveT = modelT['content'] extends ModelPrimitiveContent ? modelT['content'] : any;
       return checkAndParsePrimitiveJson(model.content as modelPrimitiveT, parsedJson) as buildType<
         modelT,
         customMappingT
       >;
     case 'constant':
-      type modelConstantT = modelT['content'] extends modelConstantType ? modelT['content'] : any;
+      type modelConstantT = modelT['content'] extends ModelConstantContent ? modelT['content'] : any;
       const modelConstant = model.content as modelConstantT;
 
       if (typeof parsedJson === 'string' && modelConstant.includes(parsedJson)) {
@@ -54,7 +54,7 @@ function checkAndParseJson<modelT extends modelType, customMappingT extends cust
       return customMapping[model.content as string](parsedJson as string) as buildType<modelT, customMappingT>;
     case 'object':
       if (typeof parsedJson === 'object') {
-        type modelObjectT = modelT['content'] extends modelObjectType ? modelT['content'] : any;
+        type modelObjectT = modelT['content'] extends ModelObjectContent ? modelT['content'] : any;
         return checkAndParseObjectJson({
           modelObject: model.content as modelObjectT,
           customMapping,
@@ -64,7 +64,7 @@ function checkAndParseJson<modelT extends modelType, customMappingT extends cust
         throw buildObjectTypeError(parsedJson);
       }
     case 'or':
-      type modelOrT = modelT['content'] extends modelOrType ? modelT['content'] : never;
+      type modelOrT = modelT['content'] extends ModelOrContent ? modelT['content'] : never;
       try {
         return checkAndParseJson({
           model: (model.content as modelOrT)[0],
@@ -84,7 +84,7 @@ function checkAndParseJson<modelT extends modelType, customMappingT extends cust
       }
     case 'array':
       if (Array.isArray(parsedJson)) {
-        type modelArrayItemT = modelT['content'] extends modelType ? modelT['content'] : any;
+        type modelArrayItemT = modelT['content'] extends Model ? modelT['content'] : any;
         return ((parsedJson as Array<unknown>).map((arrayItem) =>
           checkAndParseJson({
             model: model.content as modelArrayItemT,
@@ -98,7 +98,7 @@ function checkAndParseJson<modelT extends modelType, customMappingT extends cust
   }
 }
 
-function checkAndParsePrimitiveJson<modelPrimitiveT extends modelPrimitiveType>(
+function checkAndParsePrimitiveJson<modelPrimitiveT extends ModelPrimitiveContent>(
   modelPrimitive: modelPrimitiveT,
   parsedJson: unknown,
 ): buildPrimitiveType<modelPrimitiveT> {
@@ -149,7 +149,7 @@ function checkAndParsePrimitiveJson<modelPrimitiveT extends modelPrimitiveType>(
   throw buildTypeEngineError();
 }
 
-function checkAndParseObjectJson<modelObjectT extends modelObjectType, customMappingT extends customMappingType>({
+function checkAndParseObjectJson<modelObjectT extends ModelObjectContent, customMappingT extends customMappingType>({
   modelObject,
   customMapping,
   parsedJson,
@@ -173,11 +173,11 @@ function checkAndParseObjectJson<modelObjectT extends modelObjectType, customMap
   return parsedObjectJson;
 }
 
-function buildPrimitiveTypeError(modelPrimitive: modelPrimitiveType, parsedJson: unknown) {
+function buildPrimitiveTypeError(modelPrimitive: ModelPrimitiveContent, parsedJson: unknown) {
   return new Error(`Expected ${modelPrimitive}, but got ${parsedJson}`);
 }
 
-function buildConstantTypeError(modelConstant: modelConstantType, parsedJson: unknown) {
+function buildConstantTypeError(modelConstant: ModelConstantContent, parsedJson: unknown) {
   return new Error(`Expected one of these constants [${modelConstant}], but got ${parsedJson}`);
 }
 

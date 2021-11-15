@@ -1,2 +1,2 @@
 export * from './buildType';
-export * from './modelType';
+export * from './types';

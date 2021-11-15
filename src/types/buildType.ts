@@ -1,56 +1,53 @@
 import {
-  modelType,
-  modelCaseArrayType,
-  modelCaseConstantType,
-  modelCaseCustomType,
-  modelCaseObjectType,
-  modelCaseOrType,
-  modelCasePrimitiveType,
-  modelConstantType,
-  modelPrimitiveType,
-} from './modelType';
+  Model,
+  ModelArray,
+  ModelConstant,
+  ModelCustom,
+  ModelObject,
+  ModelOr,
+  ModelPrimitive,
+  ModelConstantContent,
+  ModelPrimitiveContent,
+} from './types';
 
 export type { buildType, buildPrimitiveType, buildConstantType, customMappingType };
 
-type buildType<
-  modelT extends modelType,
-  customMappingT extends customMappingType
-> = modelT extends modelCasePrimitiveType
+type buildType<modelT extends Model, customMappingT extends customMappingType> = modelT extends ModelPrimitive
   ? buildPrimitiveType<modelT['content']>
-  : modelT extends modelCaseConstantType
+  : modelT extends ModelConstant
   ? buildConstantType<modelT['content']>
-  : modelT extends modelCaseCustomType
+  : modelT extends ModelCustom
   ? customMappingT[modelT['content']]
-  : modelT extends modelCaseObjectType
+  : modelT extends ModelObject
   ? {
       [key in keyof modelT['content']]: buildType<modelT['content'][key], customMappingT>;
     }
-  : modelT extends modelCaseOrType
+  : modelT extends ModelOr
   ? buildOrType<modelT['content'][0], customMappingT> | buildOrType<modelT['content'][1], customMappingT>
-  : modelT extends modelCaseArrayType
+  : modelT extends ModelArray
   ? Array<buildType<modelT['content'], customMappingT>>
   : never;
 
-type buildConstantType<modelConstantT extends modelConstantType> = modelConstantT[number];
+type buildConstantType<modelConstantT extends ModelConstantContent> = modelConstantT[number];
 
 type buildOrType<
-  modelOrT extends modelType,
+  modelOrT extends Model,
   customMappingT extends customMappingType = Record<string, unknown>
-> = modelOrT extends modelCasePrimitiveType
+> = modelOrT extends ModelPrimitive
   ? buildPrimitiveType<modelOrT['content']>
-  : modelOrT extends modelCaseConstantType
+  : modelOrT extends ModelConstant
   ? buildConstantType<modelOrT['content']>
-  : modelOrT extends modelCaseArrayType
+  : modelOrT extends ModelArray
   ? Array<buildType<modelOrT['content'], customMappingT>>
-  : modelOrT extends modelCaseCustomType
+  : modelOrT extends ModelCustom
   ? customMappingT[modelOrT['content']]
-  : modelOrT extends modelCaseObjectType
+  : modelOrT extends ModelObject
   ? {
       [key in keyof modelOrT['content']]: buildType<modelOrT['content'][key], customMappingT>;
     }
   : never;
 
-type buildPrimitiveType<modelPrimitiveT extends modelPrimitiveType> = modelPrimitiveT extends 'boolean'
+type buildPrimitiveType<modelPrimitiveT extends ModelPrimitiveContent> = modelPrimitiveT extends 'boolean'
   ? boolean
   : modelPrimitiveT extends 'date'
   ? Date

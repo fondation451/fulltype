@@ -37,7 +37,7 @@ const userModel = typeArchitect.buildModel({
 } as const);
 // "as const" is mandatory, Type Architecte can only work with const type
 
-type userType = Type<typeof userModel, { ObjectId: ObjectId }>;
+type User = Type<typeof userModel, { ObjectId: ObjectId }>;
 ```
 
 The only prerequisites with Type Architect is that all model should be defined `as const` (with a const type).
@@ -194,7 +194,7 @@ If you want to compute the type of a model where there are custom kind model, yo
 a mapping of the custom kind model present from its name to an actual type:
 
 ```ts
-type objectModelWithCustomType = Type<typeof objectModel, { someError: Error }>;
+type ObjectModelWithCustom = Type<typeof objectModel, { someError: Error }>;
 ```
 
 In the same way, for JSON parsing, when there are custom kind model in your model, you need to

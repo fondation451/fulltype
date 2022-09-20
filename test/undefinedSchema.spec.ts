@@ -37,7 +37,7 @@ describe('undefinedSchema', () => {
     it('should throw if the given json is not a valid undefined', () => {
       const schema = undefinedSchema();
 
-      expect(() => schema.parse('"TEST"')).toThrow('Failure');
+      expect(() => schema.parse('"TEST"')).toThrow();
     });
   });
 

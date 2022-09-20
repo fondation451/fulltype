@@ -37,7 +37,7 @@ describe('boolean', () => {
     it('should throw if the given json is not a valid boolean', () => {
       const schema = boolean();
 
-      expect(() => schema.parse('"TEST"')).toThrow('Failure');
+      expect(() => schema.parse('"TEST"')).toThrow();
     });
   });
 

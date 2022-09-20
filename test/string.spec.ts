@@ -37,7 +37,7 @@ describe('string', () => {
     it('should throw if the given json is not a valid string', () => {
       const schema = string();
 
-      expect(() => schema.parse('4')).toThrow('Failure');
+      expect(() => schema.parse('4')).toThrow();
     });
   });
 

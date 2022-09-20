@@ -51,7 +51,7 @@ describe('object', () => {
         field2: boolean(),
       });
 
-      expect(() => schema.parse('"TEST"')).toThrow('Failure');
+      expect(() => schema.parse('"TEST"')).toThrow();
     });
 
     it('should throw if there is a missing field in the given json', () => {
@@ -60,7 +60,7 @@ describe('object', () => {
         field2: boolean(),
       });
 
-      expect(() => schema.parse('{ "field1": 1 }')).toThrow('Failure');
+      expect(() => schema.parse('{ "field1": 1 }')).toThrow();
     });
   });
 

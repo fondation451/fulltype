@@ -1,16 +1,18 @@
+import { buildSchema } from './buildSchema';
 import { Schema } from './schema';
 
 export const custom = <InputT, OutputT>(
   inputSchema: Schema<InputT>,
   customization: {
-    parseCustomization: (input: InputT) => OutputT;
+    deserialize: (intput: InputT) => OutputT;
+    serialize: (value: OutputT) => InputT;
     generate: (custom?: Partial<OutputT>) => OutputT;
-    stringifyCustomization: (value: OutputT) => InputT;
+    isType: (value: any) => value is OutputT;
   },
-): Schema<OutputT> => {
-  return {
-    parse: (json) => customization.parseCustomization(inputSchema.parse(json)),
+): Schema<OutputT> =>
+  buildSchema({
+    deserialize: (value) => customization.deserialize(inputSchema.deserialize(value)),
+    serialize: (value) => inputSchema.serialize(customization.serialize(value)),
     generate: customization.generate,
-    stringify: (value) => inputSchema.stringify(customization.stringifyCustomization(value)),
-  };
-};
+    isType: customization.isType,
+  });

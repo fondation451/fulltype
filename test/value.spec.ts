@@ -37,7 +37,7 @@ describe('value', () => {
     it('should throw if the given json is not a valid value', () => {
       const schema = value(['VALUE1', 'VALUE2'] as const);
 
-      expect(() => schema.parse('"TEST"')).toThrow('Failure');
+      expect(() => schema.parse('"TEST"')).toThrow();
     });
   });
 

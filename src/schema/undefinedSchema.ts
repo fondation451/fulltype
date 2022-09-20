@@ -1,25 +1,16 @@
-import { ParsingError, StringifyingError } from './errors';
+import { buildSchema } from './buildSchema';
 import { Schema } from './schema';
 
-export const undefinedSchema = (): Schema<undefined> => {
-  const check = (value: any): value is undefined => value === undefined;
-
-  return {
-    check,
-    parse: (json: string) => {
-      if (json === '') {
+export const undefinedSchema = (): Schema<undefined> =>
+  buildSchema({
+    deserialize: (value) => {
+      if (value === undefined) {
         return undefined;
       } else {
-        throw new ParsingError();
+        throw new Error();
       }
     },
+    serialize: (value) => value,
     generate: () => undefined,
-    stringify: (value) => {
-      if (check(value)) {
-        return '';
-      } else {
-        throw new StringifyingError();
-      }
-    },
-  };
-};
+    isType: (value: any): value is undefined => value === undefined,
+  });

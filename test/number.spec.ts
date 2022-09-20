@@ -37,7 +37,7 @@ describe('number', () => {
     it('should throw if the given json is not a valid number', () => {
       const schema = number();
 
-      expect(() => schema.parse('"TEST"')).toThrow('Failure');
+      expect(() => schema.parse('"TEST"')).toThrow();
     });
   });
 

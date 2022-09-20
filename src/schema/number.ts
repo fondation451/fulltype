@@ -3,7 +3,14 @@ import { Schema } from './schema';
 
 export const number = (): Schema<number> =>
   buildSchema({
-    check: (value): value is number => typeof value === 'number',
+    deserialize: (value) => {
+      if (typeof value === 'number') {
+        return value;
+      } else {
+        throw new Error();
+      }
+    },
+    serialize: (value) => value,
     generate: (custom) => (custom ? custom : 0),
-    stringify: (value) => JSON.stringify(value),
+    isType: (value): value is number => typeof value === 'number',
   });

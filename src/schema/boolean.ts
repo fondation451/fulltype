@@ -3,7 +3,14 @@ import { Schema } from './schema';
 
 export const boolean = (): Schema<boolean> =>
   buildSchema({
-    check: (value): value is boolean => typeof value === 'boolean',
+    deserialize: (value) => {
+      if (typeof value === 'boolean') {
+        return value;
+      } else {
+        throw new Error();
+      }
+    },
+    serialize: (value) => value,
     generate: (custom) => (custom ? custom : false),
-    stringify: (value) => JSON.stringify(value),
+    isType: (value): value is boolean => typeof value === 'boolean',
   });

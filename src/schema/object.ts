@@ -8,22 +8,29 @@ export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
   [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]>;
 }> =>
   buildSchema({
-    check: (
-      value,
-    ): value is {
-      [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]>;
-    } => {
+    deserialize: (value) => {
       if (typeof value !== 'object') {
-        return false;
+        throw new Error();
       }
+
+      const deserializedObject = {} as { [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]> };
 
       for (const key in objectSchema) {
-        if (!objectSchema[key].check(value[key])) {
-          return false;
-        }
+        deserializedObject[key] = objectSchema[key].deserialize(value[key]);
       }
 
-      return true;
+      return deserializedObject;
+    },
+    serialize: (value) => {
+      const serializedObject = {} as {
+        [Key in keyof ObjectSchemaT]: string;
+      };
+
+      for (const key in objectSchema) {
+        serializedObject[key] = objectSchema[key].serialize(value[key]);
+      }
+
+      return serializedObject;
     },
     generate: (custom) => {
       const generatedObject = {} as {
@@ -37,17 +44,21 @@ export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
 
       return generatedObject;
     },
-    stringify: (value) => {
-      const stringifiedObject = {} as {
-        [Key in keyof ObjectSchemaT]: string;
-      };
-
-      for (const key in objectSchema) {
-        stringifiedObject[key] = objectSchema[key].stringify(value[key]);
+    isType: (
+      value,
+    ): value is {
+      [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]>;
+    } => {
+      if (typeof value !== 'object') {
+        return false;
       }
 
-      return `{${Object.entries(stringifiedObject)
-        .map(([key, value]) => `"${key}":${value}`)
-        .join(',')}}`;
+      for (const key in objectSchema) {
+        if (!objectSchema[key].isType(value[key])) {
+          return false;
+        }
+      }
+
+      return true;
     },
   });

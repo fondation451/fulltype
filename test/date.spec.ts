@@ -37,7 +37,7 @@ describe('date', () => {
     it('should throw if the given json is not a valid date', () => {
       const schema = date();
 
-      expect(() => schema.parse('"TEST"')).toThrow('Failure');
+      expect(() => schema.parse('"TEST"')).toThrow();
     });
   });
 

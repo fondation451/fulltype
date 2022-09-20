@@ -1,33 +1,29 @@
 import { parseJson } from '../utils/parseJson';
-import { ParsingError, StringifyingError } from './errors';
+import { stringify } from '../utils/stringify';
 import { Schema } from './schema';
 
 export const buildSchema = <T>({
-  check,
+  deserialize,
+  serialize,
   generate,
-  stringify,
+  isType,
 }: {
-  check(value: any): value is T;
+  deserialize: (value: any) => T;
+  serialize: (value: T) => any;
   generate: (custom?: Partial<T>) => T;
-  stringify: (value: T) => string;
+  isType(value: any): value is T;
 }): Schema<T> => {
   return {
-    check,
     parse: (json: string) => {
       const parsedJson = parseJson(json);
-      if (check(parsedJson)) {
-        return parsedJson;
-      } else {
-        throw new ParsingError();
-      }
+      return deserialize(parsedJson);
     },
-    generate,
     stringify: (value) => {
-      if (check(value)) {
-        return stringify(value);
-      } else {
-        throw new StringifyingError();
-      }
+      return stringify(serialize(value));
     },
+    deserialize,
+    serialize,
+    generate,
+    isType,
   };
 };

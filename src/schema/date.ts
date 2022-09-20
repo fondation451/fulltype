@@ -4,13 +4,14 @@ import { string } from './string';
 
 export const date = (): Schema<Date> =>
   custom(string(), {
-    parseCustomization: (input) => {
+    deserialize: (input) => {
       if (!isNaN(Date.parse(input))) {
         return new Date(input);
       } else {
-        throw new Error('Invalid date parsed');
+        throw new Error();
       }
     },
+    serialize: (value) => value.toISOString(),
     generate: (custom) => (custom ? (custom as any) : new Date(0)),
-    stringifyCustomization: (value) => value.toISOString(),
+    isType: (value): value is Date => typeof value === 'string' && !isNaN(Date.parse(value)),
   });

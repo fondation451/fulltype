@@ -38,13 +38,13 @@ describe('array', () => {
     it('should throw if the given json is not a valid array', () => {
       const schema = array(number());
 
-      expect(() => schema.parse('"TEST"')).toThrow('Failure');
+      expect(() => schema.parse('"TEST"')).toThrow();
     });
 
     it('should throw if there is an ill typed array element', () => {
       const schema = array(number());
 
-      expect(() => schema.parse('[1, true]')).toThrow('Failure');
+      expect(() => schema.parse('[1, true]')).toThrow();
     });
   });
 

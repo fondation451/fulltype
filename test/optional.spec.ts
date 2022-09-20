@@ -66,7 +66,7 @@ describe('optional', () => {
     it('should throw if the given json is not a valid boolean or undefined', () => {
       const schema = optional(boolean());
 
-      expect(() => schema.parse('"TEST"')).toThrow('Failure');
+      expect(() => schema.parse('"TEST"')).toThrow();
     });
   });
 

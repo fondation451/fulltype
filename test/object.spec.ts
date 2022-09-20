@@ -1,6 +1,7 @@
 import { boolean } from '../src/schema/boolean';
 import { number } from '../src/schema/number';
 import { object } from '../src/schema/object';
+import { optional } from '../src/schema/optional';
 
 describe('object', () => {
   describe('parse/stringify', () => {
@@ -43,6 +44,19 @@ describe('object', () => {
       // eslint-disable-next-line
       const _typeCheck: { field1: number; field2: boolean } = parsedValue;
       expect(parsedValue).toEqual({ field1: 1, field2: true });
+    });
+
+    it('should parse a valid object with optional field', () => {
+      const schema = object({
+        field1: optional(number()),
+        field2: boolean(),
+      });
+
+      const parsedValue = schema.parse('{ "field2": true }');
+
+      // eslint-disable-next-line
+      const _typeCheck: { field1?: number; field2: boolean } = parsedValue;
+      expect(parsedValue).toEqual({ field2: true });
     });
 
     it('should throw if the given json is not a valid object', () => {

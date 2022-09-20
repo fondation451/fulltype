@@ -1,6 +1,6 @@
-import { parseJson } from '../utils/parseJson';
-import { stringify } from '../utils/stringify';
 import { Schema } from './schema';
+import { parseJson } from './utils/parseJson';
+import { stringify } from './utils/stringify';
 
 export const buildSchema = <T>({
   deserialize,

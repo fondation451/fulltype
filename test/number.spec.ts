@@ -1,4 +1,4 @@
-import { number } from '../src/schema/number';
+import { number } from '../src/number';
 
 describe('number', () => {
   describe('parse/stringify', () => {

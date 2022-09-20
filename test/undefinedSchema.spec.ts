@@ -1,4 +1,4 @@
-import { undefinedSchema } from '../src/schema/undefinedSchema';
+import { undefinedSchema } from '../src/undefinedSchema';
 
 describe('undefinedSchema', () => {
   describe('parse/stringify', () => {

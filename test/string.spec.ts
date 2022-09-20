@@ -1,4 +1,4 @@
-import { string } from '../src/schema/string';
+import { string } from '../src/string';
 
 describe('string', () => {
   describe('parse/stringify', () => {

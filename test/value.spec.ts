@@ -1,4 +1,4 @@
-import { value } from '../src/schema/value';
+import { value } from '../src/value';
 
 describe('value', () => {
   describe('parse/stringify', () => {

@@ -1,7 +1,7 @@
-import { boolean } from '../src/schema/boolean';
-import { number } from '../src/schema/number';
-import { object } from '../src/schema/object';
-import { optional } from '../src/schema/optional';
+import { boolean } from '../src/boolean';
+import { number } from '../src/number';
+import { object } from '../src/object';
+import { optional } from '../src/optional';
 
 describe('object', () => {
   describe('parse/stringify', () => {

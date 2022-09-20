@@ -1,4 +1,4 @@
-import { date } from '../src/schema/date';
+import { date } from '../src/date';
 
 describe('date', () => {
   describe('parse/stringify', () => {

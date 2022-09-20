@@ -1,5 +1,5 @@
-import { array } from '../src/schema/array';
-import { number } from '../src/schema/number';
+import { array } from '../src/array';
+import { number } from '../src/number';
 
 describe('array', () => {
   describe('parse/stringify', () => {

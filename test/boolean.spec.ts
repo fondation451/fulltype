@@ -1,4 +1,4 @@
-import { boolean } from '../src/schema/boolean';
+import { boolean } from '../src/boolean';
 
 describe('boolean', () => {
   describe('parse/stringify', () => {

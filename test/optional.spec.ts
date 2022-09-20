@@ -1,5 +1,5 @@
-import { boolean } from '../src/schema/boolean';
-import { optional } from '../src/schema/optional';
+import { boolean } from '../src/boolean';
+import { optional } from '../src/optional';
 
 describe('optional', () => {
   describe('parse/stringify', () => {

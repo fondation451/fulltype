@@ -1,7 +1,29 @@
-import { array } from '../src/v2/array';
-import { number } from '../src/v2/number';
+import { array } from '../src/schema/array';
+import { number } from '../src/schema/number';
 
 describe('array', () => {
+  describe('parse/stringify', () => {
+    it('should be idempotent', () => {
+      const schema = array(number());
+      const json = '[1,2]';
+
+      const newJson = schema.stringify(schema.parse(json));
+
+      expect(json).toEqual(newJson);
+    });
+  });
+
+  describe('stringify/parse', () => {
+    it('should be idempotent', () => {
+      const schema = array(number());
+      const value = schema.generate([1, 2]);
+
+      const newValue = schema.parse(schema.stringify(value));
+
+      expect(value).toEqual(newValue);
+    });
+  });
+
   describe('parse', () => {
     it('should parse a valid array', () => {
       const schema = array(number());
@@ -16,13 +38,13 @@ describe('array', () => {
     it('should throw if the given json is not a valid array', () => {
       const schema = array(number());
 
-      expect(() => schema.parse('"TEST"')).toThrow('Invalid array parsed');
+      expect(() => schema.parse('"TEST"')).toThrow('Failure');
     });
 
     it('should throw if there is an ill typed array element', () => {
       const schema = array(number());
 
-      expect(() => schema.parse('[1, true]')).toThrow('Invalid number parsed');
+      expect(() => schema.parse('[1, true]')).toThrow('Failure');
     });
   });
 

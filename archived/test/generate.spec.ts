@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import { buildModel } from '../src/typeArchitect/buildModel';
-import { generate, generateObject } from '../src/typeArchitect/generate';
+import { buildModel } from '../typeArchitect/buildModel';
+import { generate, generateObject } from '../typeArchitect/generate';
 
 const TEST_ITERATION = 5;
 

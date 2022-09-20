@@ -1,6 +1,28 @@
-import { value } from '../src/v2/value';
+import { value } from '../src/schema/value';
 
 describe('value', () => {
+  describe('parse/stringify', () => {
+    it('should be idempotent', () => {
+      const schema = value(['VALUE1', 'VALUE2'] as const);
+      const json = '"VALUE2"';
+
+      const newJson = schema.stringify(schema.parse(json));
+
+      expect(json).toEqual(newJson);
+    });
+  });
+
+  describe('stringify/parse', () => {
+    it('should be idempotent', () => {
+      const schema = value(['VALUE1', 'VALUE2'] as const);
+      const element = schema.generate('VALUE2');
+
+      const newElement = schema.parse(schema.stringify(element));
+
+      expect(element).toEqual(newElement);
+    });
+  });
+
   describe('parse', () => {
     it('should parse a valid value', () => {
       const schema = value(['VALUE1', 'VALUE2'] as const);
@@ -15,7 +37,7 @@ describe('value', () => {
     it('should throw if the given json is not a valid value', () => {
       const schema = value(['VALUE1', 'VALUE2'] as const);
 
-      expect(() => schema.parse('"TEST"')).toThrow('Invalid value parsed');
+      expect(() => schema.parse('"TEST"')).toThrow('Failure');
     });
   });
 

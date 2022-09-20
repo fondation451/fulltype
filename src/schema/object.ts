@@ -1,3 +1,4 @@
+import { buildSchema } from './buildSchema';
 import { Schema, GenericSchema } from './schema';
 import { TypeOf } from './TypeOf';
 
@@ -5,29 +6,25 @@ export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
   objectSchema: ObjectSchemaT,
 ): Schema<{
   [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]>;
-}> => {
-  return {
-    parse: (json: string) => {
-      const parsedJson = JSON.parse(json);
-      if (typeof parsedJson === 'object') {
-        const parsedObjectJson = {} as {
-          [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]>;
-        };
-
-        for (const key in objectSchema) {
-          if (!parsedJson[key]) {
-            throw new Error('Undefined object property');
-          } else {
-            parsedObjectJson[key] = objectSchema[key].parse(JSON.stringify(parsedJson[key]));
-          }
-        }
-
-        return parsedObjectJson;
-      } else {
-        throw new Error('Invalid object parsed');
+}> =>
+  buildSchema({
+    check: (
+      value,
+    ): value is {
+      [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]>;
+    } => {
+      if (typeof value !== 'object') {
+        return false;
       }
-    },
 
+      for (const key in objectSchema) {
+        if (!objectSchema[key].check(value[key])) {
+          return false;
+        }
+      }
+
+      return true;
+    },
     generate: (custom) => {
       const generatedObject = {} as {
         [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]>;
@@ -40,7 +37,6 @@ export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
 
       return generatedObject;
     },
-
     stringify: (value) => {
       const stringifiedObject = {} as {
         [Key in keyof ObjectSchemaT]: string;
@@ -50,7 +46,8 @@ export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
         stringifiedObject[key] = objectSchema[key].stringify(value[key]);
       }
 
-      return JSON.stringify(stringifiedObject);
+      return `{${Object.entries(stringifiedObject)
+        .map(([key, value]) => `"${key}":${value}`)
+        .join(',')}}`;
     },
-  };
-};
+  });

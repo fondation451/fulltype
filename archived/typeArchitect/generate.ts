@@ -122,9 +122,9 @@ function generateFromPrimitive<ModelPrimitiveContentT extends ModelPrimitiveCont
     case 'number':
       return random(MAX_NUMBER) as TypePrimitive<ModelPrimitiveContentT>;
     case 'string':
-      return (currentFieldName
-        ? `${currentFieldName}_${random(MAX_NUMBER)}`
-        : `STRING_${random(MAX_NUMBER)}`) as TypePrimitive<ModelPrimitiveContentT>;
+      return (
+        currentFieldName ? `${currentFieldName}_${random(MAX_NUMBER)}` : `STRING_${random(MAX_NUMBER)}`
+      ) as TypePrimitive<ModelPrimitiveContentT>;
     case 'undefined':
       return undefined as TypePrimitive<ModelPrimitiveContentT>;
     case 'void':

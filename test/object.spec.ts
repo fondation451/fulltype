@@ -1,8 +1,36 @@
-import { boolean } from '../src/v2/boolean';
-import { number } from '../src/v2/number';
-import { object } from '../src/v2/object';
+import { boolean } from '../src/schema/boolean';
+import { number } from '../src/schema/number';
+import { object } from '../src/schema/object';
 
 describe('object', () => {
+  describe('parse/stringify', () => {
+    it('should be idempotent', () => {
+      const schema = object({
+        field1: number(),
+        field2: boolean(),
+      });
+      const json = '{"field1":1,"field2":true}';
+
+      const newJson = schema.stringify(schema.parse(json));
+
+      expect(json).toEqual(newJson);
+    });
+  });
+
+  describe('stringify/parse', () => {
+    it('should be idempotent', () => {
+      const schema = object({
+        field1: number(),
+        field2: boolean(),
+      });
+      const value = schema.generate({ field1: 1, field2: true });
+
+      const newValue = schema.parse(schema.stringify(value));
+
+      expect(value).toEqual(newValue);
+    });
+  });
+
   describe('parse', () => {
     it('should parse a valid object', () => {
       const schema = object({
@@ -23,7 +51,7 @@ describe('object', () => {
         field2: boolean(),
       });
 
-      expect(() => schema.parse('"TEST"')).toThrow('Invalid object parsed');
+      expect(() => schema.parse('"TEST"')).toThrow('Failure');
     });
 
     it('should throw if there is a missing field in the given json', () => {
@@ -32,7 +60,7 @@ describe('object', () => {
         field2: boolean(),
       });
 
-      expect(() => schema.parse('{ "field1": 1 }')).toThrow('Undefined object property');
+      expect(() => schema.parse('{ "field1": 1 }')).toThrow('Failure');
     });
   });
 

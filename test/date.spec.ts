@@ -1,6 +1,28 @@
-import { date } from '../src/v2/date';
+import { date } from '../src/schema/date';
 
 describe('date', () => {
+  describe('parse/stringify', () => {
+    it('should be idempotent', () => {
+      const schema = date();
+      const json = '"2022-09-16T00:00:00.000Z"';
+
+      const newJson = schema.stringify(schema.parse(json));
+
+      expect(json).toEqual(newJson);
+    });
+  });
+
+  describe('stringify/parse', () => {
+    it('should be idempotent', () => {
+      const schema = date();
+      const value = schema.generate(new Date('2022-09-16T00:00:00.000Z'));
+
+      const newValue = schema.parse(schema.stringify(value));
+
+      expect(value).toEqual(newValue);
+    });
+  });
+
   describe('parse', () => {
     it('should parse a valid date', () => {
       const schema = date();
@@ -15,7 +37,7 @@ describe('date', () => {
     it('should throw if the given json is not a valid date', () => {
       const schema = date();
 
-      expect(() => schema.parse('"TEST"')).toThrow('Invalid date parsed');
+      expect(() => schema.parse('"TEST"')).toThrow('Failure');
     });
   });
 

@@ -1,6 +1,28 @@
-import { boolean } from '../src/v2/boolean';
+import { boolean } from '../src/schema/boolean';
 
 describe('boolean', () => {
+  describe('parse/stringify', () => {
+    it('should be idempotent', () => {
+      const schema = boolean();
+      const json = 'true';
+
+      const newJson = schema.stringify(schema.parse(json));
+
+      expect(json).toEqual(newJson);
+    });
+  });
+
+  describe('stringify/parse', () => {
+    it('should be idempotent', () => {
+      const schema = boolean();
+      const value = schema.generate(true);
+
+      const newValue = schema.parse(schema.stringify(value));
+
+      expect(value).toEqual(newValue);
+    });
+  });
+
   describe('parse', () => {
     it('should parse a valid boolean', () => {
       const schema = boolean();
@@ -15,7 +37,7 @@ describe('boolean', () => {
     it('should throw if the given json is not a valid boolean', () => {
       const schema = boolean();
 
-      expect(() => schema.parse('"TEST"')).toThrow('Invalid boolean parsed');
+      expect(() => schema.parse('"TEST"')).toThrow('Failure');
     });
   });
 

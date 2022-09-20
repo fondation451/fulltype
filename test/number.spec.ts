@@ -1,6 +1,28 @@
-import { number } from '../src/v2/number';
+import { number } from '../src/schema/number';
 
 describe('number', () => {
+  describe('parse/stringify', () => {
+    it('should be idempotent', () => {
+      const schema = number();
+      const json = '4';
+
+      const newJson = schema.stringify(schema.parse(json));
+
+      expect(json).toEqual(newJson);
+    });
+  });
+
+  describe('stringify/parse', () => {
+    it('should be idempotent', () => {
+      const schema = number();
+      const value = schema.generate(4);
+
+      const newValue = schema.parse(schema.stringify(value));
+
+      expect(value).toEqual(newValue);
+    });
+  });
+
   describe('parse', () => {
     it('should parse a valid number', () => {
       const schema = number();
@@ -15,7 +37,7 @@ describe('number', () => {
     it('should throw if the given json is not a valid number', () => {
       const schema = number();
 
-      expect(() => schema.parse('"TEST"')).toThrow('Invalid number parsed');
+      expect(() => schema.parse('"TEST"')).toThrow('Failure');
     });
   });
 

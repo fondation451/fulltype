@@ -85,13 +85,13 @@ function checkAndParseJson<ModelT extends Model, CustomMappingT extends CustomMa
     case 'array':
       if (Array.isArray(parsedJson)) {
         type ModelArrayContentT = ModelT['content'] extends Model ? ModelT['content'] : any;
-        return ((parsedJson as Array<unknown>).map((arrayItem) =>
+        return (parsedJson as Array<unknown>).map((arrayItem) =>
           checkAndParseJson({
             model: model.content as ModelArrayContentT,
             customMapping,
             parsedJson: arrayItem,
           }),
-        ) as unknown) as Type<ModelT, CustomMappingT>;
+        ) as unknown as Type<ModelT, CustomMappingT>;
       } else {
         throw buildArrayTypeError(parsedJson);
       }

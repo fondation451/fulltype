@@ -15,7 +15,7 @@ other data schema like a mongo validation table
 ## Installation
 
 ```js
-yarn install type-architect
+yarn install fulltype
 ```
 
 ## Example

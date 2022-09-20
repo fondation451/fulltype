@@ -1,9 +1,9 @@
 {
   "author": "Nicolas Assouad",
   "bugs": {
-    "url": "https://github.com/fondation451/type-architect/issues"
+    "url": "https://github.com/fondation451/fulltype/issues"
   },
-  "description": "Introduce data model and auto generated type in Typescript",
+  "description": "Introduce type schema, auto generated type, and dynamic check on parsing in Typescript",
   "devDependencies": {
     "@types/jest": "^29.0.3",
     "@types/mongodb": "^4.0.7",
@@ -22,21 +22,22 @@
   "files": [
     "lib/src/**/*"
   ],
-  "homepage": "https://github.com/fondation451/type-architect#readme",
+  "homepage": "https://github.com/fondation451/fulltype#readme",
   "keywords": [
     "typescript",
     "data",
     "schema",
     "model",
     "json",
-    "dry"
+    "dry",
+    "parsing"
   ],
   "license": "ISC",
   "main": "lib/src/index.js",
-  "name": "type-architect",
+  "name": "fulltype",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fondation451/type-architect.git"
+    "url": "git+https://github.com/fondation451/fulltype.git"
   },
   "scripts": {
     "build": "tsc",

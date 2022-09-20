@@ -7,10 +7,9 @@ import { object } from './object';
 import { optional } from './optional';
 import { or } from './or';
 import { string } from './string';
+import type { TypeOf } from './TypeOf';
 import { undefinedSchema } from './undefinedSchema';
 import { value } from './value';
-
-import type { TypeOf } from './TypeOf';
 
 export { array, boolean, custom, date, number, object, optional, or, string, undefinedSchema as undefined, value };
 

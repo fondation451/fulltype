@@ -44,7 +44,7 @@
     "download": "yarn install",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint '{test,src}/**/*.{js,ts,tsx}' --quiet",
-    "postversion": "git push && git push --tags",
+    "postversion": "git push",
     "prepare": "yarn build",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "yarn lint",

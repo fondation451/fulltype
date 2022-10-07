@@ -1,3 +1,4 @@
+import bodyParser from "body-parser";
 import { Express } from "express";
 import * as ft from "fulltype";
 import * as ftApi from "fulltype-api";
@@ -22,6 +23,8 @@ export const buildApiServer = <ApiSchemaT extends ftApi.ApiSchema>({
   };
 }): void => {
   const schema = api.schema;
+
+  app.use(bodyParser.json());
 
   for (const routeName in schema) {
     const apiEndpoint = schema[routeName];

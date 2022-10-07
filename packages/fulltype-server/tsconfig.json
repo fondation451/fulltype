@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "esModuleInterop": true,
     "isolatedModules": true,
     "module": "commonjs",
     "outDir": "./lib",

@@ -30,8 +30,9 @@ export const buildApiServer = <ApiSchemaT extends ftApi.ApiSchema>({
     const apiEndpoint = schema[routeName];
     const controller = controllers[routeName];
 
-    app.post(`${api.baseUrl}/${routeName}`, async (req: any, res: any, next: any) => {
+    app.post(`/${api.baseUrl}/${routeName}`, async (req: any, res: any, next: any) => {
       try {
+        console.log("@@@@@taezktjazklj");
         const output = await controller({
           headers: req.headers,
           // eslint-disable-next-line

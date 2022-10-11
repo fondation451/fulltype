@@ -41,7 +41,9 @@ export const buildApiClient = <ApiSchemaT extends ftApi.ApiSchema>({
       });
 */
       try {
-        const { output } = JSON.parse(await response.data);
+        console.log("response.data", response.data);
+        const { output } = JSON.parse(response.data);
+        console.log("response.data output", output);
 
         // eslint-disable-next-line
         return { output: apiEndpoint!.output.parse(output), status: response.status };

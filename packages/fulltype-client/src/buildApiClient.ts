@@ -30,23 +30,13 @@ export const buildApiClient = <ApiSchemaT extends ftApi.ApiSchema>({
         },
         { headers: generateHeaders() },
       );
-      /*
-      await fetch(`${url}/${api.baseUrl}/${routeName}`, {
-        // eslint-disable-next-line
-        body: JSON.stringify({ input: apiEndpoint!.input.stringify(input) }),
-        cache: "default",
-        headers: generateHeaders(),
-        method: "post",
-        mode: "cors",
-      });
-*/
-      try {
-        console.log("response.data", response.data);
-        const { output } = JSON.parse(response.data);
-        console.log("response.data output", output);
 
-        // eslint-disable-next-line
-        return { output: apiEndpoint!.output.parse(output), status: response.status };
+      try {
+        return {
+          // eslint-disable-next-line
+          output: apiEndpoint!.output.parse(response.data.output),
+          status: response.status,
+        };
       } catch (error) {
         // eslint-disable-next-line
         return { output: apiEndpoint!.output.generate(), status: response.status };

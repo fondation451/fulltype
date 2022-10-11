@@ -54,5 +54,5 @@
     "version": "yarn format && git add -A src"
   },
   "types": "lib/index.d.ts",
-  "version": "0.0.5"
+  "version": "0.0.6"
 }

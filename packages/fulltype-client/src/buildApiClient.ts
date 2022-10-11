@@ -1,3 +1,4 @@
+import axios from "axios";
 import * as ft from "fulltype";
 import * as ftApi from "fulltype-api";
 
@@ -22,7 +23,15 @@ export const buildApiClient = <ApiSchemaT extends ftApi.ApiSchema>({
   for (const routeName in schema) {
     const apiEndpoint = schema[routeName];
     apiClient[routeName] = async (input) => {
-      const response = await fetch(`${url}/${api.baseUrl}/${routeName}`, {
+      const response = await axios.post(
+        `${url}/${api.baseUrl}/${routeName}`,
+        {
+          input: apiEndpoint!.input.stringify(input),
+        },
+        { headers: generateHeaders() },
+      );
+      /*
+      await fetch(`${url}/${api.baseUrl}/${routeName}`, {
         // eslint-disable-next-line
         body: JSON.stringify({ input: apiEndpoint!.input.stringify(input) }),
         cache: "default",
@@ -30,9 +39,9 @@ export const buildApiClient = <ApiSchemaT extends ftApi.ApiSchema>({
         method: "post",
         mode: "cors",
       });
-
+*/
       try {
-        const { output } = JSON.parse(await response.text());
+        const { output } = JSON.parse(await response.data);
 
         // eslint-disable-next-line
         return { output: apiEndpoint!.output.parse(output), status: response.status };

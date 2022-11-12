@@ -1,3 +1,3 @@
-import { GenericSchema } from './schema';
+import { GenericSchema } from "./schema";
 
-export type TypeOf<SchemaT extends GenericSchema> = ReturnType<SchemaT['deserialize']>;
+export type TypeOf<SchemaT extends GenericSchema> = ReturnType<SchemaT["deserialize"]>;

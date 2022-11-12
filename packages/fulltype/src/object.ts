@@ -1,6 +1,6 @@
-import { buildSchema } from './buildSchema';
-import { Schema, GenericSchema } from './schema';
-import { TypeOf } from './TypeOf';
+import { buildSchema } from "./buildSchema";
+import { GenericSchema, Schema } from "./schema";
+import { TypeOf } from "./TypeOf";
 
 export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
   objectSchema: ObjectSchemaT,
@@ -9,14 +9,17 @@ export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
 }> =>
   buildSchema({
     deserialize: (value) => {
-      if (typeof value !== 'object') {
+      if (typeof value !== "object") {
         throw new Error();
       }
 
-      const deserializedObject = {} as { [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]> };
+      const deserializedObject = {} as {
+        [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]>;
+      };
 
       for (const key in objectSchema) {
-        deserializedObject[key] = objectSchema[key].deserialize(value[key]);
+        // eslint-disable-next-line
+        deserializedObject[key] = objectSchema[key]!.deserialize(value[key]);
       }
 
       return deserializedObject;
@@ -27,7 +30,8 @@ export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
       };
 
       for (const key in objectSchema) {
-        serializedObject[key] = objectSchema[key].serialize(value[key]);
+        // eslint-disable-next-line
+        serializedObject[key] = objectSchema[key]!.serialize(value[key]);
       }
 
       return serializedObject;
@@ -39,7 +43,8 @@ export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
 
       for (const key in objectSchema) {
         const customField = custom && custom[key];
-        generatedObject[key] = objectSchema[key].generate(customField);
+        // eslint-disable-next-line
+        generatedObject[key] = objectSchema[key]!.generate(customField);
       }
 
       return generatedObject;
@@ -49,12 +54,13 @@ export const object = <ObjectSchemaT extends { [key: string]: GenericSchema }>(
     ): value is {
       [Key in keyof ObjectSchemaT]: TypeOf<ObjectSchemaT[Key]>;
     } => {
-      if (typeof value !== 'object') {
+      if (typeof value !== "object") {
         return false;
       }
 
       for (const key in objectSchema) {
-        if (!objectSchema[key].isType(value[key])) {
+        // eslint-disable-next-line
+        if (!objectSchema[key]!.isType(value[key])) {
           return false;
         }
       }

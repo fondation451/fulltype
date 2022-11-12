@@ -1,10 +1,10 @@
-import { buildSchema } from './buildSchema';
-import { Schema } from './schema';
+import { buildSchema } from "./buildSchema";
+import { Schema } from "./schema";
 
 export const boolean = (): Schema<boolean> =>
   buildSchema({
     deserialize: (value) => {
-      if (typeof value === 'boolean') {
+      if (typeof value === "boolean") {
         return value;
       } else {
         throw new Error();
@@ -12,5 +12,5 @@ export const boolean = (): Schema<boolean> =>
     },
     serialize: (value) => value,
     generate: (custom) => (custom ? custom : false),
-    isType: (value): value is boolean => typeof value === 'boolean',
+    isType: (value): value is boolean => typeof value === "boolean",
   });

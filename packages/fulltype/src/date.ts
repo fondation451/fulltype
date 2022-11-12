@@ -1,6 +1,6 @@
-import { custom } from './custom';
-import { Schema } from './schema';
-import { string } from './string';
+import { custom } from "./custom";
+import { Schema } from "./schema";
+import { string } from "./string";
 
 export const date = (): Schema<Date> =>
   custom(string(), {
@@ -13,5 +13,6 @@ export const date = (): Schema<Date> =>
     },
     serialize: (value) => value.toISOString(),
     generate: (custom) => (custom ? (custom as any) : new Date(0)),
-    isType: (value): value is Date => typeof value === 'string' && !isNaN(Date.parse(value)),
+    isType: (value): value is Date =>
+      typeof value === "string" && !isNaN(Date.parse(value)),
   });

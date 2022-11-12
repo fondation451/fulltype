@@ -1,5 +1,5 @@
-import { buildSchema } from './buildSchema';
-import { Schema } from './schema';
+import { buildSchema } from "./buildSchema";
+import { Schema } from "./schema";
 
 export const undefinedSchema = (): Schema<undefined> =>
   buildSchema({

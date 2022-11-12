@@ -3,16 +3,26 @@ import * as ftApi from "fulltype-api";
 import * as ftClient from "fulltype-client";
 import { useEffect, useState } from "react";
 
+type ApiOutput<ApiSchemaT extends ftApi.ApiSchema, RouteNameT extends keyof ApiSchemaT> =
+  | {
+      output: ft.TypeOf<ApiSchemaT[RouteNameT]["output"]>;
+      status: number;
+      isLoaded: true;
+      input: ApiSchemaT[RouteNameT]["input"];
+      refetch: (input?: ft.TypeOf<ApiSchemaT[RouteNameT]["input"]>) => void;
+    }
+  | {
+      output: undefined;
+      status: undefined;
+      isLoaded: false;
+      input: ApiSchemaT[RouteNameT]["input"];
+      refetch: (input?: ft.TypeOf<ApiSchemaT[RouteNameT]["input"]>) => void;
+    };
+
 type UseApi<ApiSchemaT extends ftApi.ApiSchema> = <RouteNameT extends keyof ApiSchemaT>(
   routeName: RouteNameT,
   input: ft.TypeOf<ApiSchemaT[RouteNameT]["input"]>,
-) => {
-  output: ft.TypeOf<ApiSchemaT[RouteNameT]["output"]> | undefined;
-  status: number | undefined;
-  isLoaded: boolean;
-  input: ApiSchemaT[RouteNameT]["input"];
-  refetch: (input?: ft.TypeOf<ApiSchemaT[RouteNameT]["input"]>) => void;
-};
+) => ApiOutput<ApiSchemaT, RouteNameT>;
 
 export const buildUseApi = <ApiSchemaT extends ftApi.ApiSchema>({
   api,
@@ -20,7 +30,7 @@ export const buildUseApi = <ApiSchemaT extends ftApi.ApiSchema>({
   url,
 }: {
   api: ftApi.Api<ApiSchemaT>;
-  generateHeaders: () => any;
+  generateHeaders: () => any; // eslint-disable-line
   url: string;
 }): UseApi<ApiSchemaT> => {
   const apiClient = ftClient.buildApiClient({ api, generateHeaders, url });
@@ -39,6 +49,7 @@ export const buildUseApi = <ApiSchemaT extends ftApi.ApiSchema>({
       useState<ft.TypeOf<ApiSchemaT[RouteNameT]["input"]>>(input);
 
     useEffect(() => {
+      // eslint-disable-next-line
       apiClient[routeName](currentInput as any).then(
         ({ output, status }) => {
           setOutput(output);
@@ -65,6 +76,6 @@ export const buildUseApi = <ApiSchemaT extends ftApi.ApiSchema>({
         setStatus(undefined);
         setRefetchFlag(!refetchFlag);
       },
-    };
+    } as ApiOutput<ApiSchemaT, RouteNameT>;
   };
 };

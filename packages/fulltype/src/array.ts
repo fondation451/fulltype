@@ -1,8 +1,10 @@
-import { buildSchema } from './buildSchema';
-import { Schema, GenericSchema } from './schema';
-import { TypeOf } from './TypeOf';
+import { buildSchema } from "./buildSchema";
+import { GenericSchema, Schema } from "./schema";
+import { TypeOf } from "./TypeOf";
 
-export const array = <SchemaT extends GenericSchema>(schema: SchemaT): Schema<Array<TypeOf<SchemaT>>> =>
+export const array = <SchemaT extends GenericSchema>(
+  schema: SchemaT,
+): Schema<Array<TypeOf<SchemaT>>> =>
   buildSchema({
     deserialize: (value) => {
       if (Array.isArray(value)) {

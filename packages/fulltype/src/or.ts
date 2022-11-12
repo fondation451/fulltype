@@ -1,7 +1,10 @@
-import { buildSchema } from './buildSchema';
-import { Schema } from './schema';
+import { buildSchema } from "./buildSchema";
+import { Schema } from "./schema";
 
-export const or = <LeftT, RightT>(leftSchema: Schema<LeftT>, rightSchema: Schema<RightT>): Schema<LeftT | RightT> =>
+export const or = <LeftT, RightT>(
+  leftSchema: Schema<LeftT>,
+  rightSchema: Schema<RightT>,
+): Schema<LeftT | RightT> =>
   buildSchema({
     deserialize: (value) => {
       try {
@@ -28,5 +31,6 @@ export const or = <LeftT, RightT>(leftSchema: Schema<LeftT>, rightSchema: Schema
         return leftSchema.generate();
       }
     },
-    isType: (value): value is LeftT | RightT => leftSchema.isType(value) || rightSchema.isType(value),
+    isType: (value): value is LeftT | RightT =>
+      leftSchema.isType(value) || rightSchema.isType(value),
   });

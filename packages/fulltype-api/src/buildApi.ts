@@ -1,8 +1,8 @@
 import * as ft from "fulltype";
 
 export type ApiEndpoint = {
-  input: ft.Schema<any>;
-  output: ft.Schema<any>;
+  input: ft.Schema<any>; // eslint-disable-line
+  output: ft.Schema<any>; // eslint-disable-line
 };
 
 export type ApiSchema = { [routeName: string]: ApiEndpoint };

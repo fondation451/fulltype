@@ -1,10 +1,10 @@
-import { buildSchema } from './buildSchema';
-import { Schema } from './schema';
+import { buildSchema } from "./buildSchema";
+import { Schema } from "./schema";
 
 export const number = (): Schema<number> =>
   buildSchema({
     deserialize: (value) => {
-      if (typeof value === 'number') {
+      if (typeof value === "number") {
         return value;
       } else {
         throw new Error();
@@ -12,5 +12,5 @@ export const number = (): Schema<number> =>
     },
     serialize: (value) => value,
     generate: (custom) => (custom ? custom : 0),
-    isType: (value): value is number => typeof value === 'number',
+    isType: (value): value is number => typeof value === "number",
   });

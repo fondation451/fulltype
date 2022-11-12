@@ -1,15 +1,19 @@
-import bodyParser from "body-parser";
-import { Express } from "express";
 import * as ft from "fulltype";
 import * as ftApi from "fulltype-api";
+import * as bodyParser from "body-parser";
+import { Express } from "express";
 
 type Controller<ApiEndpointT extends ftApi.ApiEndpoint> = ({
   headers,
   args,
 }: {
-  headers: any;
+  headers: any; // eslint-disable-line
   args: ft.TypeOf<ApiEndpointT["input"]>;
 }) => ft.TypeOf<ApiEndpointT["output"]>;
+
+export type Controllers<ApiSchemaT extends ftApi.ApiSchema> = {
+  [routeName in keyof ApiSchemaT]: Controller<ApiSchemaT[routeName]>;
+};
 
 export const buildApiServer = <ApiSchemaT extends ftApi.ApiSchema>({
   app,
@@ -18,9 +22,7 @@ export const buildApiServer = <ApiSchemaT extends ftApi.ApiSchema>({
 }: {
   app: Express;
   api: ftApi.Api<ApiSchemaT>;
-  controllers: {
-    [routeName in keyof ApiSchemaT]: Controller<ApiSchemaT[routeName]>;
-  };
+  controllers: Controllers<ApiSchemaT>;
 }): void => {
   const schema = api.schema;
 
@@ -30,9 +32,9 @@ export const buildApiServer = <ApiSchemaT extends ftApi.ApiSchema>({
     const apiEndpoint = schema[routeName];
     const controller = controllers[routeName];
 
+    // eslint-disable-next-line
     app.post(`/${api.baseUrl}/${routeName}`, async (req: any, res: any, next: any) => {
       try {
-        console.log("@@@@@taezktjazklj");
         const output = await controller({
           headers: req.headers,
           // eslint-disable-next-line
